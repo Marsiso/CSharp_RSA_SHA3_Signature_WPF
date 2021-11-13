@@ -1,9 +1,8 @@
 ﻿<Application x:Class="CSharp_RSA_Cipher_WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:CSharp_RSA_Cipher_WPF"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
+             xmlns:local="clr-namespace:CSharp_RSA_Cipher_WPF.Views">
+    <Application.MainWindow>
+        <local:MainWindowView Visibility="Visible"/>
+    </Application.MainWindow>
 </Application>

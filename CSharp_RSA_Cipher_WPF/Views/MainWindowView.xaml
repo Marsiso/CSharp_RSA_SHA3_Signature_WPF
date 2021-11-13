@@ -194,7 +194,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                
             </Grid>
             <!--#region TITLE-->
             
