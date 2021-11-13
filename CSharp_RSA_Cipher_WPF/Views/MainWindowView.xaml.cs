@@ -24,7 +24,11 @@ namespace CSharp_RSA_Cipher_WPF.Views
             InitializeComponent();
         }
 
-        private void Exit_OnClick(object sender, MouseEventArgs e) => Close();
+        private void Exit_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton is MouseButton.Left)
+                Close();
+        }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -33,6 +37,21 @@ namespace CSharp_RSA_Cipher_WPF.Views
                 return;
             }
             DragMove();
+        }
+
+        private void BtnPageEncryption_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Pages.Content = new EncryptionPage();
+        }
+
+        private void BtnPageDecryption_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Pages.Content = new DecryptionPage();
+        }
+
+        private void BtnPageGenerator_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Pages.Content = new GeneratorPage();
         }
     }
 }

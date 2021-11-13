@@ -7,7 +7,6 @@
         xmlns:models="clr-namespace:CSharp_RSA_Cipher_WPF.ViewModels"
         xmlns:local="clr-namespace:CSharp_RSA_Cipher_WPF"
         mc:Ignorable="d"
-        Title="MainWindowView" 
         MinHeight="720" 
         MinWidth="1280"
         Height="720"
@@ -22,7 +21,8 @@
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
-        Icon="/Assets/Icon_TaskBar.ico">
+        Icon="/Assets/Icon_TaskBar.ico"
+        Title="RSA Cipher">
 
     <Window.Resources>
         <!--#region MENU BUTTONS -->
@@ -57,6 +57,7 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="0.8"/>
+                    <Setter Property="Background" Value="#FFBA0B2E"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -120,9 +121,11 @@
             <!--#endregion-->
             <!--#region ENCRYPTION BUTTON -->
             <Border DockPanel.Dock="Top"
-                    Style="{StaticResource BorderMenuStyle}">
+                    Style="{StaticResource BorderMenuStyle}"
+                    x:Name="BtnPageEncryption"
+                    MouseDown="BtnPageEncryption_MouseDown">
                 <StackPanel Orientation="Horizontal"
-                        Margin="25, 10, 0, 0"
+                        Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/icon_Encryption_White.png"
@@ -134,23 +137,27 @@
             <!--#endregion-->          
             <!--#region DECRYPTION BUTTON -->
             <Border DockPanel.Dock="Top"
-                    Style="{StaticResource BorderMenuStyle}">
+                    Style="{StaticResource BorderMenuStyle}"
+                    x:Name="BtnPageDecryption"
+                    MouseDown="BtnPageDecryption_MouseDown">
                 <StackPanel Orientation="Horizontal"
-                        Margin="25, 10, 0, 0"
+                        Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Decryption_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
                     <Label Content="Decryption"
-                            Style="{StaticResource LblMenuStyle}"/>
+                           Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->
             <!--#region GENERATOR BUTTON -->
             <Border DockPanel.Dock="Top"
-                    Style="{StaticResource BorderMenuStyle}">
+                    Style="{StaticResource BorderMenuStyle}"
+                    x:Name="BtnPageGenerator"
+                    MouseDown="BtnPageGenerator_MouseDown">
                 <StackPanel Orientation="Horizontal"
-                        Margin="25, 10, 0, 0"
+                        Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Generate_White.png"
@@ -165,15 +172,15 @@
                     Style="{StaticResource BorderMenuStyle}"
                     VerticalAlignment="Bottom"
                     Margin="0, 0, 0, 10"
-                    GotMouseCapture="Exit_OnClick">
+                    MouseDown="Exit_OnClick">
                 <StackPanel Orientation="Horizontal"
-                        Margin="25, 10, 0, 0"
+                        Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Exit_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
                     <Label Content="Exit"
-                            Style="{StaticResource LblMenuStyle}"/>
+                           Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->
@@ -186,10 +193,12 @@
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch">
             <!--#region PAGES-->
-            <Frame Margin="10"
-                   x:Name="Pages">
-                
-            </Frame>
+            <Frame Margin="15"
+                   x:Name="Pages"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Stretch"
+                   VerticalContentAlignment="Stretch"
+                   HorizontalContentAlignment="Stretch"/>
             <!--#endregion-->
         </Grid>
         <!--#endregion-->
