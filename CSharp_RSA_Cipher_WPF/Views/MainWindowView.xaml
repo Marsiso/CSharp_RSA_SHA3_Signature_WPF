@@ -21,11 +21,12 @@
         Mouse.MouseDown="Window_MouseDown"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
-        WindowState="Normal">
+        WindowState="Normal"
+        Icon="/Assets/Icon_TaskBar.ico">
 
     <Window.Resources>
         <!--#region MENU BUTTONS -->
-        <Style TargetType="{x:Type Button}" x:Key="ButtonMenuStyle">
+        <Style TargetType="{x:Type Label}" x:Key="LblMenuStyle">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontSize" Value="20"/>
@@ -39,7 +40,7 @@
             <Setter Property="Margin" Value="10, 0, 0, 0"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate TargetType="{x:Type Label}">
                         <Border Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -126,8 +127,8 @@
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/icon_Encryption_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Button Content="Encryption"
-                            Style="{StaticResource ButtonMenuStyle}"/>
+                    <Label Content="Encryption"
+                            Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->          
@@ -140,8 +141,8 @@
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Decryption_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Button Content="Decryption"
-                            Style="{StaticResource ButtonMenuStyle}"/>
+                    <Label Content="Decryption"
+                            Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->
@@ -154,8 +155,8 @@
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Generate_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Button Content="Generator"
-                            Style="{StaticResource ButtonMenuStyle}"/>
+                    <Label Content="Generator"
+                            Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->
@@ -163,15 +164,16 @@
             <Border DockPanel.Dock="Bottom"
                     Style="{StaticResource BorderMenuStyle}"
                     VerticalAlignment="Bottom"
-                    Margin="0, 0, 0, 10">
+                    Margin="0, 0, 0, 10"
+                    GotMouseCapture="Exit_OnClick">
                 <StackPanel Orientation="Horizontal"
                         Margin="25, 10, 0, 0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Exit_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Button Content="Exit"
-                            Style="{StaticResource ButtonMenuStyle}"/>
+                    <Label Content="Exit"
+                            Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->
@@ -183,20 +185,11 @@
               Grid.Row="0"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-            </Grid>
-            <!--#region TITLE-->
-            
+            <!--#region PAGES-->
+            <Frame Margin="10"
+                   x:Name="Pages">
+                
+            </Frame>
             <!--#endregion-->
         </Grid>
         <!--#endregion-->
