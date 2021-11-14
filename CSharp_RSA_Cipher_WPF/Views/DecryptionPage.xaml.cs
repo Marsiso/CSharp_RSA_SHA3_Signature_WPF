@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,10 +33,34 @@ namespace CSharp_RSA_Cipher_WPF.Views
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key.Equals(Key.Enter))
+            TextBox? textBox = sender as TextBox;
+            if (textBox is null || e.Key.Equals(Key.Enter) is false)
             {
-                TextBox? textBox = sender as TextBox;
-                textBox?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                return;
+            }
+            _ = LblInput.Focus();
+        }
+
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9 ]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void NumberValidationTextBox(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(String)))
+            {
+                String text = (String)e.DataObject.GetData(typeof(String));
+                Regex regex = new Regex("[^0-9 ]+");
+                if (regex.IsMatch(text) is true)
+                {
+                    e.CancelCommand();
+                }
+            }
+            else
+            {
+                e.CancelCommand();
             }
         }
     }

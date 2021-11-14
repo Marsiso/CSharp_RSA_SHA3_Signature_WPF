@@ -125,7 +125,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
         public static (BigInteger, BigInteger) GetPQ()
         {
-            const int lowerBound = 1024, upperBound = 2048;
+            const int lowerBound = 512, upperBound = 1024;
 
             int lenBitsP = RandomNumberGenerator.GetInt32(lowerBound, upperBound);
             int lenBitsQ = RandomNumberGenerator.GetInt32(lowerBound, upperBound);

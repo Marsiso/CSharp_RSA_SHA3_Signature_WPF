@@ -103,7 +103,8 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
                     <Button ToolTip="Encrypt plain text."
-                            Style="{StaticResource ButtonStyle}">
+                            Style="{StaticResource ButtonStyle}"
+                            Command="{Binding CommandEncrypt}">
                         <Image Style="{StaticResource ImageStyle}"
                                Source="/Assets/Icon_Play_White.png"
                                Width="20"
@@ -111,7 +112,7 @@
                     </Button>
                     <Button ToolTip="Import from file."
                             Style="{StaticResource ButtonStyle}"
-                            Command="{Binding CommandOpenFromFile}">
+                            Command="{Binding CommandOpenFromFileEncryption}">
                         <Image Style="{StaticResource ImageStyle}"
                                Source="/Assets/Icon_Open_White.png"/>
                     </Button>
@@ -123,7 +124,8 @@
         <TextBox Style="{StaticResource TxtBoxStyle}"
                  Grid.Row="1"
                  KeyDown="TextBox_KeyDown"
-                 x:Name="TxtBoxInput"/>
+                 x:Name="TxtBoxInput"
+                 Text="{Binding Input}"/>
         <!--#endregion-->
         <!--#region LABEL OUTPUT -->
         <Border Background="#FF33334C"
@@ -141,7 +143,9 @@
                 <Label Content="OUTPUT"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Center"
-                       Grid.Column="1"/>
+                       Grid.Column="1"
+                       Focusable="True"
+                       x:Name="LblOutput"/>
                 <StackPanel Orientation="Horizontal"
                             Grid.Column="2"
                             HorizontalAlignment="Right"
@@ -166,8 +170,9 @@
         <TextBox Style="{StaticResource TxtBoxStyle}"
                  Grid.Row="3"
                  IsReadOnly="True"
-                 IsHitTestVisible="False"
-                 x:Name="TxtBoxOutput"/>
+                 IsHitTestVisible="True"
+                 x:Name="TxtBoxOutput"
+                 Text="{Binding Output, Mode=OneWay}"/>
         <!--#endregion-->
     </Grid>
 </Page>

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Org.BouncyCastle.Math;
+using System.Text.RegularExpressions;
 
 namespace CSharp_RSA_Cipher_WPF.ViewModels
 {
@@ -40,7 +41,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         public string Input
         {
             get => input;
-            set => SetProperty(ref input, value);
+            set
+            {
+                SetProperty(ref input, value);
+                Output = string.Empty;
+            }
         }
 
         public string Output
@@ -101,7 +106,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
         public BigIntegerConverter BigIntegerConverter { get; set; }
 
-        public ICommand CommandOpenFromFile
+        public ICommand CommandOpenFromFileEncryption
         {
             get => new CommandHandler(() =>
             {
@@ -109,7 +114,30 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                 openFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
                 openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (openFileDialog.ShowDialog() == true)
+                {
                     Input = File.ReadAllText(openFileDialog.FileName);
+                }
+            }, () => true);
+        }
+
+        public ICommand CommandOpenFromFileDecryption
+        {
+            get => new CommandHandler(() =>
+            {
+                OpenFileDialog openFileDialog = new();
+                openFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string str = File.ReadAllText(openFileDialog.FileName);
+                    Regex regex = new Regex("[^0-9 ]+");
+                    if (regex.IsMatch(str) is true)
+                    {
+                        Input = string.Empty;
+                        return;
+                    }
+                    Input = str;
+                }
             }, () => true);
         }
 
@@ -125,10 +153,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             }, () => true);
         }
 
-        public ICommand CommandSwapInputOutput
-        {
-            get => new CommandHandler(() => (Input, Output) = (Output, Input), () => true);
-        }
+        public ICommand CommandSwapInputOutput => new CommandHandler(() => (Input, Output) = (Output, Input), () => true);
 
         public ICommand CommandGenerateKeys => new CommandHandler(() =>
         {
@@ -143,6 +168,32 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ΦN)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(E)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(D)));
+        }, () => true);
+
+        public ICommand CommandEncrypt => new CommandHandler(() =>
+        {
+            if (input.Equals(String.Empty) || e.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            {
+                return;
+            }
+            Output = RSA.Encrypt(input, e, n);
+        }, () => true);
+
+        public ICommand CommandDecrypt => new CommandHandler(() =>
+        {
+            if (input.Equals(String.Empty) || d.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            {
+                return;
+            }
+            try
+            {
+                Output = RSA.Decrypt(input, d, n);
+            }
+            catch (Exception ex)
+            {
+                const string errmsg = "Block formatting exception. Trailing whitespace? Revise your input!!";
+                Output = errmsg;
+            }
         }, () => true);
 
         public void SetProperty<T>(ref T store, T value, [CallerMemberName] string name = null)

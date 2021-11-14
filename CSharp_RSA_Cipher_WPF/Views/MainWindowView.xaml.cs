@@ -44,11 +44,15 @@ namespace CSharp_RSA_Cipher_WPF.Views
 
         private void BtnPageEncryption_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            mainWindowViewModel.Input = String.Empty;
+            mainWindowViewModel.Output = String.Empty;
             Pages.Content = new EncryptionPage(mainWindowViewModel);
         }
 
         private void BtnPageDecryption_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            mainWindowViewModel.Input = String.Empty;
+            mainWindowViewModel.Output = String.Empty;
             Pages.Content = new DecryptionPage(mainWindowViewModel);
         }
 
