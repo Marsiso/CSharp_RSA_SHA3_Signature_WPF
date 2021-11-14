@@ -24,7 +24,7 @@ namespace CSharp_RSA_Cipher_WPF.Views
         {
             InitializeComponent();
             Pages.NavigationUIVisibility = NavigationUIVisibility.Hidden;
-            Pages.Content = new EncryptionPage();
+            Pages.Content = new EncryptionPage(mainWindowViewModel);
         }
 
         private void Exit_OnClick(object sender, MouseButtonEventArgs e)
@@ -44,12 +44,12 @@ namespace CSharp_RSA_Cipher_WPF.Views
 
         private void BtnPageEncryption_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Pages.Content = new EncryptionPage();
+            Pages.Content = new EncryptionPage(mainWindowViewModel);
         }
 
         private void BtnPageDecryption_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Pages.Content = new DecryptionPage();
+            Pages.Content = new DecryptionPage(mainWindowViewModel);
         }
 
         private void BtnPageGenerator_MouseDown(object sender, MouseButtonEventArgs e)

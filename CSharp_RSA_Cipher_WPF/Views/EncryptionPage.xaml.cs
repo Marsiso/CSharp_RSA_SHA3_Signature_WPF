@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharp_RSA_Cipher_WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,10 +21,12 @@ namespace CSharp_RSA_Cipher_WPF.Views
     /// </summary>
     public partial class EncryptionPage : Page
     {
-        const int int32Max = int.MaxValue;
+        readonly MainWindowViewModel mainWindowViewModel;
 
-        public EncryptionPage()
+        public EncryptionPage(MainWindowViewModel instance)
         {
+            mainWindowViewModel = instance;
+            DataContext = mainWindowViewModel;
             InitializeComponent();
         }
 

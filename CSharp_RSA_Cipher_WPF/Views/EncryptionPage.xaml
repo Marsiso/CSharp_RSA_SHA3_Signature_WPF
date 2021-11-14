@@ -25,8 +25,8 @@
             <Setter Property="VerticalContentAlignment" Value="Top"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="MaxLines" Value="{Binding int32Max}"/>
-            <Setter Property="MaxLength" Value="{Binding int32Max}"/>
+            <Setter Property="MaxLines" Value="2147483647"/>
+            <Setter Property="MaxLength" Value="2147483647"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontSize" Value="18"/>
@@ -43,6 +43,32 @@
             <Setter Property="Width" Value="25"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <!--#endregion-->
+        <!--#region BUTTON -->
+        <Style TargetType="{x:Type Button}" x:Key="ButtonStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0, 0, 5, 0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.8"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <!--#endregion-->
     </Page.Resources>
@@ -62,14 +88,42 @@
                 HorizontalAlignment="Stretch"
                 Grid.Row="0"
                 BorderThickness="0">
-            <Label Content="INPUT"
-               Style="{StaticResource LblStyle}"
-                   HorizontalAlignment="Center"/>
+            <Grid Margin="0, 0, 5, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="300"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="INPUT"
+                       Style="{StaticResource LblStyle}"
+                       HorizontalAlignment="Center"
+                       Grid.Column="1"/>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button ToolTip="Encrypt plain text."
+                            Style="{StaticResource ButtonStyle}">
+                        <Image Style="{StaticResource ImageStyle}"
+                               Source="/Assets/Icon_Play_White.png"
+                               Width="20"
+                               Height="20"/>
+                    </Button>
+                    <Button ToolTip="Import from file."
+                            Style="{StaticResource ButtonStyle}"
+                            Command="{Binding CommandOpenFromFile}">
+                        <Image Style="{StaticResource ImageStyle}"
+                               Source="/Assets/Icon_Open_White.png"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Border>
+        <!--#endregion-->
         <!--#region TEXTBOX INPUT -->
         <TextBox Style="{StaticResource TxtBoxStyle}"
                  Grid.Row="1"
-                 KeyDown="TextBox_KeyDown"/>
+                 KeyDown="TextBox_KeyDown"
+                 x:Name="TxtBoxInput"/>
         <!--#endregion-->
         <!--#region LABEL OUTPUT -->
         <Border Background="#FF33334C"
@@ -78,16 +132,42 @@
                 Grid.Row="2"
                 BorderThickness="0"
                 Focusable="True">
-            <Label Content="OUTPUT"
-               Style="{StaticResource LblStyle}"
-                   HorizontalAlignment="Center"/>
+            <Grid Margin="0, 0, 5, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="300"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="OUTPUT"
+                       Style="{StaticResource LblStyle}"
+                       HorizontalAlignment="Center"
+                       Grid.Column="1"/>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button ToolTip="Switch and encrypt."
+                            Style="{StaticResource ButtonStyle}"
+                            Command="{Binding CommanSwapInputOutput}">
+                        <Image Style="{StaticResource ImageStyle}"
+                               Source="/Assets/Icon_Swap_White.png"/>
+                    </Button>
+                    <Button ToolTip="Export to file."
+                            Style="{StaticResource ButtonStyle}"
+                            Command="{Binding CommandSaveToFile}">
+                        <Image Style="{StaticResource ImageStyle}"
+                               Source="/Assets/Icon_Save_White.png"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Border>
         <!--#endregion-->
         <!--#region TEXTBOX OUTPUT -->
         <TextBox Style="{StaticResource TxtBoxStyle}"
                  Grid.Row="3"
                  IsReadOnly="True"
-                 IsHitTestVisible="False"/>
+                 IsHitTestVisible="False"
+                 x:Name="TxtBoxOutput"/>
         <!--#endregion-->
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharp_RSA_Cipher_WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,22 @@ namespace CSharp_RSA_Cipher_WPF.Views
     /// </summary>
     public partial class DecryptionPage : Page
     {
-        public DecryptionPage()
+        readonly MainWindowViewModel mainWindowViewModel;
+
+        public DecryptionPage(MainWindowViewModel instance)
         {
+            mainWindowViewModel = instance;
+            DataContext = mainWindowViewModel;
             InitializeComponent();
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key.Equals(Key.Enter))
+            {
+                TextBox? textBox = sender as TextBox;
+                textBox?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+            }
         }
     }
 }

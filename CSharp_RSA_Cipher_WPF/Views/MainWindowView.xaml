@@ -24,6 +24,10 @@
         Icon="/Assets/Icon_TaskBar.ico"
         Title="RSA Cipher">
 
+    <Window.DataContext>
+        <models:MainWindowViewModel x:Name="mainWindowViewModel"/>
+    </Window.DataContext>
+
     <Window.Resources>
         <!--#region MENU BUTTONS -->
         <Style TargetType="{x:Type Label}" x:Key="LblMenuStyle">
