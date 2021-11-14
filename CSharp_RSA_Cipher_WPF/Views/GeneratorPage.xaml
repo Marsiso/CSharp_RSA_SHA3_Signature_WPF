@@ -5,8 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CSharp_RSA_Cipher_WPF.Views"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="GeneratorPage">
+      d:DesignHeight="690" d:DesignWidth="1050"
+      Background="Transparent"
+      ShowsNavigationUI="False">
 
     <Grid>
         

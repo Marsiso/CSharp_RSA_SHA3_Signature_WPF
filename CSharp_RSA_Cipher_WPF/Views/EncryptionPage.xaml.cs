@@ -20,9 +20,20 @@ namespace CSharp_RSA_Cipher_WPF.Views
     /// </summary>
     public partial class EncryptionPage : Page
     {
+        const int int32Max = int.MaxValue;
+
         public EncryptionPage()
         {
             InitializeComponent();
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key.Equals(Key.Enter))
+            {
+                TextBox? textBox = sender as TextBox;
+                textBox?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+            }
         }
     }
 }

@@ -162,7 +162,7 @@
                         HorizontalAlignment="Left">
                     <Image Source="/Assets/Icon_Generate_White.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Label Content="Generator"
+                    <Label Content="Keys"
                             Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
@@ -193,8 +193,7 @@
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch">
             <!--#region PAGES-->
-            <Frame Margin="15"
-                   x:Name="Pages"
+            <Frame x:Name="Pages"
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch"
                    VerticalContentAlignment="Stretch"

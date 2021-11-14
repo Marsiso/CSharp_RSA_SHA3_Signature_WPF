@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace CSharp_RSA_Cipher_WPF.Views
@@ -22,6 +23,8 @@ namespace CSharp_RSA_Cipher_WPF.Views
         public MainWindowView()
         {
             InitializeComponent();
+            Pages.NavigationUIVisibility = NavigationUIVisibility.Hidden;
+            Pages.Content = new EncryptionPage();
         }
 
         private void Exit_OnClick(object sender, MouseButtonEventArgs e)

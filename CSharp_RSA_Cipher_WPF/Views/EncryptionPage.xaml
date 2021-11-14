@@ -5,7 +5,47 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CSharp_RSA_Cipher_WPF.Views"
       mc:Ignorable="d" 
-      d:DesignHeight="690" d:DesignWidth="1050">
+      d:DesignHeight="690" d:DesignWidth="1050"
+      Background="Transparent"
+      ShowsNavigationUI="False">
+    <Page.Resources>
+        <!--#region LABEL -->
+        <Style TargetType="{x:Type Label}" x:Key="LblStyle">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <!--#endregion-->
+        <!--#region TEXTBOX -->
+        <Style TargetType="{x:Type TextBox}" x:Key="TxtBoxStyle">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="MaxLines" Value="{Binding int32Max}"/>
+            <Setter Property="MaxLength" Value="{Binding int32Max}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="CaretBrush" Value="White"/>
+        </Style>
+        <!--#endregion-->
+        <!--#region MENU IMAGES-->
+        <Style TargetType="{x:Type Image}" x:Key="ImageStyle">
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Width" Value="25"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <!--#endregion-->
+    </Page.Resources>
     
     <Grid VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch">
@@ -17,7 +57,37 @@
         </Grid.RowDefinitions>
         
         <!--#region LABEL INPUT -->
-        
+        <Border Background="#FF33334C"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Grid.Row="0"
+                BorderThickness="0">
+            <Label Content="INPUT"
+               Style="{StaticResource LblStyle}"
+                   HorizontalAlignment="Center"/>
+        </Border>
+        <!--#region TEXTBOX INPUT -->
+        <TextBox Style="{StaticResource TxtBoxStyle}"
+                 Grid.Row="1"
+                 KeyDown="TextBox_KeyDown"/>
+        <!--#endregion-->
+        <!--#region LABEL OUTPUT -->
+        <Border Background="#FF33334C"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Grid.Row="2"
+                BorderThickness="0"
+                Focusable="True">
+            <Label Content="OUTPUT"
+               Style="{StaticResource LblStyle}"
+                   HorizontalAlignment="Center"/>
+        </Border>
+        <!--#endregion-->
+        <!--#region TEXTBOX OUTPUT -->
+        <TextBox Style="{StaticResource TxtBoxStyle}"
+                 Grid.Row="3"
+                 IsReadOnly="True"
+                 IsHitTestVisible="False"/>
         <!--#endregion-->
     </Grid>
 </Page>
