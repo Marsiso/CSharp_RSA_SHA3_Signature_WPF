@@ -54,7 +54,7 @@ namespace CSharp_RSA_Cipher_WPF.Views
 
         private void BtnPageGenerator_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Pages.Content = new GeneratorPage();
+            Pages.Content = new GeneratorPage(mainWindowViewModel);
         }
     }
 }

@@ -148,7 +148,7 @@
                             VerticalAlignment="Center">
                     <Button ToolTip="Switch and encrypt."
                             Style="{StaticResource ButtonStyle}"
-                            Command="{Binding CommanSwapInputOutput}">
+                            Command="{Binding CommandSwapInputOutput}">
                         <Image Style="{StaticResource ImageStyle}"
                                Source="/Assets/Icon_Swap_White.png"/>
                     </Button>
