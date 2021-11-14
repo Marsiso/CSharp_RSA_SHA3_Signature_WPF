@@ -75,8 +75,6 @@
         </Style>
         <!--#endregion-->
     </Window.Resources>
-    
-    
     <!--#region MAIN WINDOW LAYOUT -->
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>

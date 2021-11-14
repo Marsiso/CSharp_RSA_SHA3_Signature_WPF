@@ -32,11 +32,9 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             output = string.Empty;
             BigIntegerConverter = new BigIntegerConverter();
 
-            //(P, Q) = RSA.GetPQ();
-            //N = RSA.GetN(p, q);
-            //ΦN = RSA.GetΦ(p, q);
-            //E = RSA.GenereatePublicKey(Φn);
-            //D = RSA.GenereatePrivateKey(e, Φn);
+            E = BigInteger.Zero;
+            D = BigInteger.Zero;
+            N = BigInteger.Zero;
         }
 
         public string Input
@@ -54,7 +52,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         public BigInteger N
         {
             get => n;
-            set => SetProperty(ref n, value);
+            set
+            {
+                SetProperty(ref n, value);
+                P = Q = ΦN = BigInteger.Zero;
+            }
         }
 
         public BigInteger ΦN
@@ -78,13 +80,21 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         public BigInteger E
         {
             get => e;
-            set => SetProperty(ref e, value);
+            set
+            {
+                SetProperty(ref e, value);
+                P = Q = ΦN = BigInteger.Zero;
+            }
         }
 
         public BigInteger D
         {
             get => d;
-            set => SetProperty(ref d, value);
+            set
+            {
+                SetProperty(ref d, value);
+                P = Q = ΦN = BigInteger.Zero;
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -119,6 +129,21 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         {
             get => new CommandHandler(() => (Input, Output) = (Output, Input), () => true);
         }
+
+        public ICommand CommandGenerateKeys => new CommandHandler(() =>
+        {
+            (p, q) = RSA.GetPQ();
+            n = RSA.GetN(p, q);
+            Φn = RSA.GetΦ(p, q);
+            e = RSA.GenereatePublicKey(Φn);
+            d = RSA.GenereatePrivateKey(e, Φn);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(P)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Q)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(N)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ΦN)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(E)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(D)));
+        }, () => true);
 
         public void SetProperty<T>(ref T store, T value, [CallerMemberName] string name = null)
         {
