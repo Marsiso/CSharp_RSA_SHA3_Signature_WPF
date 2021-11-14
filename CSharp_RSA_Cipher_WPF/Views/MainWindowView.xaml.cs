@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CSharp_RSA_Cipher_WPF.Views
 {
@@ -46,6 +37,12 @@ namespace CSharp_RSA_Cipher_WPF.Views
         {
             mainWindowViewModel.Input = String.Empty;
             mainWindowViewModel.Output = String.Empty;
+
+            BrushConverter brushConverter = new BrushConverter();
+            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#FFBA0B2E");
+            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+
             Pages.Content = new EncryptionPage(mainWindowViewModel);
         }
 
@@ -53,11 +50,22 @@ namespace CSharp_RSA_Cipher_WPF.Views
         {
             mainWindowViewModel.Input = String.Empty;
             mainWindowViewModel.Output = String.Empty;
+
+            BrushConverter brushConverter = new BrushConverter();
+            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#FFBA0B2E");
+            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+
             Pages.Content = new DecryptionPage(mainWindowViewModel);
         }
 
         private void BtnPageGenerator_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            BrushConverter brushConverter = new BrushConverter();
+            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#FFBA0B2E");
+            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+
             Pages.Content = new GeneratorPage(mainWindowViewModel);
         }
     }

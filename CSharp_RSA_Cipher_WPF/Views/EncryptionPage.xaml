@@ -94,7 +94,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="300"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="INPUT"
+                <Label Content="Plain Text"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Center"
                        Grid.Column="1"/>
@@ -140,7 +140,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="300"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="OUTPUT"
+                <Label Content="Cipher Text"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Center"
                        Grid.Column="1"

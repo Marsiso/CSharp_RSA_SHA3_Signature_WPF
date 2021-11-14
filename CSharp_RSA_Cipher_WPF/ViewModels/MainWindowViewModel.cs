@@ -172,8 +172,14 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
         public ICommand CommandEncrypt => new CommandHandler(() =>
         {
-            if (input.Equals(String.Empty) || e.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            if (input.Equals(String.Empty))
             {
+                return;
+            }
+            if (e.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            {
+                const string errmsg = "Public key pair exception. Keys unset? Set private key pair values!!";
+                Output = errmsg;
                 return;
             }
             Output = RSA.Encrypt(input, e, n);
@@ -181,8 +187,14 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
         public ICommand CommandDecrypt => new CommandHandler(() =>
         {
-            if (input.Equals(String.Empty) || d.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            if (input.Equals(String.Empty))
             {
+                return;
+            }
+            if (d.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            {
+                const string errmsg = "Private key pair exception. Keys unset? Set private key pair values!!";
+                Output = errmsg;
                 return;
             }
             try

@@ -125,7 +125,8 @@
             <Border DockPanel.Dock="Top"
                     Style="{StaticResource BorderMenuStyle}"
                     x:Name="BtnPageEncryption"
-                    MouseDown="BtnPageEncryption_MouseDown">
+                    MouseDown="BtnPageEncryption_MouseDown"
+                    Background="#FFBA0B2E">
                 <StackPanel Orientation="Horizontal"
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
