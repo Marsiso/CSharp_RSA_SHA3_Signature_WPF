@@ -150,12 +150,6 @@
                             Grid.Column="2"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                    <Button ToolTip="Switch and encrypt."
-                            Style="{StaticResource ButtonStyle}"
-                            Command="{Binding CommandSwapInputOutput}">
-                        <Image Style="{StaticResource ImageStyle}"
-                               Source="/Assets/Icon_Swap_White.png"/>
-                    </Button>
                     <Button ToolTip="Export to file."
                             Style="{StaticResource ButtonStyle}"
                             Command="{Binding CommandSaveToFile}">

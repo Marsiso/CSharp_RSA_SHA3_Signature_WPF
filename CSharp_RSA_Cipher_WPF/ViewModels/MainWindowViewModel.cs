@@ -153,8 +153,6 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             }, () => true);
         }
 
-        public ICommand CommandSwapInputOutput => new CommandHandler(() => (Input, Output) = (Output, Input), () => true);
-
         public ICommand CommandGenerateKeys => new CommandHandler(() =>
         {
             (p, q) = RSA.GetPQ();
