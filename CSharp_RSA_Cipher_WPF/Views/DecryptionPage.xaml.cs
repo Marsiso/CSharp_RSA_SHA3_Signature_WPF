@@ -63,5 +63,10 @@ namespace CSharp_RSA_Cipher_WPF.Views
                 e.CancelCommand();
             }
         }
+
+        private void Page_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

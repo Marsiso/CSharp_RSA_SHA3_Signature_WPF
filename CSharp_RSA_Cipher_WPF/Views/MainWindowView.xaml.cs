@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -26,12 +27,24 @@ namespace CSharp_RSA_Cipher_WPF.Views
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!e.ChangedButton.Equals(MouseButton.Left))
+            if (e.ChangedButton.Equals(MouseButton.Left) && e.ClickCount is 2)
             {
+                if (WindowState is WindowState.Maximized)
+                {
+                    WindowState = WindowState.Normal;
+                    return;
+                }
+                WindowState = WindowState.Maximized;
                 return;
             }
-            DragMove();
+            if (e.ChangedButton.Equals(MouseButton.Left) && WindowState is not WindowState.Maximized)
+            {
+                DragMove();
+            }
         }
+
+        [DllImport("User32.dll")]
+        private static extern bool SetCursorPos(int X, int Y);
 
         private void BtnPageEncryption_MouseDown(object sender, MouseButtonEventArgs e)
         {

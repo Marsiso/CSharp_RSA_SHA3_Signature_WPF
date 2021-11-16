@@ -12,16 +12,11 @@
     <None Remove="Assets\Icon_Encryption_White.png" />
     <None Remove="Assets\Icon_Exit_White.png" />
     <None Remove="Assets\Icon_Generate_White.png" />
-    <None Remove="Assets\Icon_Maximize_White.png" />
     <None Remove="Assets\Icon_Menu_White.png" />
-    <None Remove="Assets\Icon_Minimize_White.png" />
     <None Remove="Assets\Icon_Open_White.png" />
-    <None Remove="Assets\Icon_Play_Color.png" />
     <None Remove="Assets\Icon_Play_White.png" />
     <None Remove="Assets\Icon_Save_White.png" />
-    <None Remove="Assets\Icon_Swap_White.png" />
     <None Remove="Assets\Icon_TaskBar.ico" />
-    <None Remove="Assets\Logo_Table_White.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,16 +28,11 @@
     <Resource Include="Assets\Icon_Encryption_White.png" />
     <Resource Include="Assets\Icon_Exit_White.png" />
     <Resource Include="Assets\Icon_Generate_White.png" />
-    <Resource Include="Assets\Icon_Maximize_White.png" />
     <Resource Include="Assets\Icon_Menu_White.png" />
-    <Resource Include="Assets\Icon_Minimize_White.png" />
     <Resource Include="Assets\Icon_Open_White.png" />
-    <Resource Include="Assets\Icon_Play_Color.png" />
     <Resource Include="Assets\Icon_Play_White.png" />
     <Resource Include="Assets\Icon_Save_White.png" />
-    <Resource Include="Assets\Icon_Swap_White.png" />
     <Resource Include="Assets\Icon_TaskBar.ico" />
-    <Resource Include="Assets\Logo_Table_White.png" />
   </ItemGroup>
 
 </Project>
