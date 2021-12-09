@@ -161,7 +161,7 @@
                     Grid.Column="4"
                     ToolTip="Exportovat a archivovat kopii souboru včetně podpisu."
                     Style="{StaticResource ButtonStyle}"
-                    Command="{Binding CommandOpenFromFileEncryption}">
+                    Command="{Binding CommandSaveZipFile}">
                     <Image 
                         Style="{StaticResource ImageStyle}"
                         Source="/Assets/Icon_ZipFIle.png"/>

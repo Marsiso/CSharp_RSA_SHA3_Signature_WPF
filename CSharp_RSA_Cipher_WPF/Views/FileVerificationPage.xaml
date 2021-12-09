@@ -72,16 +72,60 @@
             </Style.Triggers>
         </Style>
         <!--#endregion-->
+        <!--#region LABELS -->
+        <Style TargetType="{x:Type Label}" x:Key="LabelStyle">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
+        </Style>
+        <!--#endregion-->
+        <!--#region TEXT BOXES -->
+        <Style TargetType="{x:Type TextBox}" x:Key="TextBoxStyle">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="MaxLines" Value="1"/>
+            <Setter Property="InputScope" Value="Number"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#FFF01D47"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Margin" Value="10,0,10,0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+        <!--#endregion-->
+        <!--#region TEXT BLOCKS -->
+        <Style TargetType="{x:Type TextBlock}" x:Key="TextBlockStyle">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <!--#endregion-->
     </Page.Resources>
 
     <Grid VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--#region LABEL INPUT -->
+        <!--#region LABEL SOURCE FILE -->
         <Border Background="#FF33334C"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
@@ -89,37 +133,190 @@
                 BorderThickness="0">
             <Grid Margin="0, 0, 5, 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Cipher Text"
+                <Label Content="Kopie zdrojového souboru"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Center"
-                       Grid.Column="1"
-                       Focusable="True"
-                       x:Name="LblInput"/>
-                <StackPanel Orientation="Horizontal"
-                            Grid.Column="2"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                    <Button ToolTip="Decrypt cipher text."
-                            Style="{StaticResource ButtonStyle}"
-                            Command="{Binding CommandDecrypt}">
-                        <Image Style="{StaticResource ImageStyle}"
-                               Source="/Assets/Icon_Play_White.png"
-                               Width="20"
-                               Height="20"/>
-                    </Button>
-                    <Button ToolTip="Import from file."
-                            Style="{StaticResource ButtonStyle}"
-                            Command="{Binding CommandOpenFromFileDecryption}">
-                        <Image Style="{StaticResource ImageStyle}"
-                               Source="/Assets/Icon_Open_White.png"/>
-                    </Button>
-                </StackPanel>
+                       Grid.Column="1"/>
+                <Button
+                    Grid.Column="2"
+                    ToolTip="Otevřít archivovaný soubor a ověřit soubor elektronickým podpisem."
+                    Style="{StaticResource ButtonStyle}"
+                    Command="{Binding CommandOpenZipFile}">
+                    <Image 
+                        Style="{StaticResource ImageStyle}"
+                        Source="/Assets/Icon_Verification.png"/>
+                </Button>
             </Grid>
         </Border>
+        <!--#endregion-->
+        <!--# SOURCE FILE -->
+        <Grid Margin="10,0,5,0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- FILE NAME -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Content="Název souboru" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Style="{StaticResource TextBoxStyle}"
+                    Text="{Binding SourceFileCopyInfo.Name, Mode=OneWay}"/>
+            <!-- FILE EXTENSION -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Content="Typ souboru" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Style="{StaticResource TextBoxStyle}"
+                    Text="{Binding SourceFileCopyInfo.Extension, Mode=OneWay}"/>
+            <!-- FILE PATH -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    Content="Adresa umístění souboru" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Style="{StaticResource TextBoxStyle}"
+                    Text="{Binding SourceFileCopyInfo.FullName, Mode=OneWay}"/>
+            <!-- FILE SIZE -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    Content="Velikost souboru" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    Style="{StaticResource TextBoxStyle}">
+                <TextBox.Text>
+                    <MultiBinding StringFormat="{}{0} B">
+                        <Binding Path="SourceFileCopyInfo.Length" Mode="OneWay"/>
+                    </MultiBinding>
+                </TextBox.Text>
+            </TextBox>
+            <!-- DATE CREATED -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="4"
+                    Content="Datum vytvoření" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="4"
+                    Style="{StaticResource TextBoxStyle}"
+                    Text="{Binding SourceFileCopyInfo.CreationTime, Mode=OneWay}"/>
+            <!-- DATE MODIFIED -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="5"
+                    Content="Datum poslední úpravy" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="5"
+                    Style="{StaticResource TextBoxStyle}"
+                    Text="{Binding SourceFileCopyInfo.LastWriteTime, Mode=OneWay}"/>
+            <!-- DATE OF LAST ACCESS -->
+            <Label 
+                    Grid.Column="0"
+                    Grid.Row="6"
+                    Content="Datum posledního přístupu" Style="{StaticResource LabelStyle}"/>
+            <TextBox
+                    Grid.Column="1"
+                    Grid.Row="6"
+                    Style="{StaticResource TextBoxStyle}"
+                    Text="{Binding SourceFileCopyInfo.LastAccessTime, Mode=OneWay}"/>
+        </Grid>
+        <!--#endregion-->
+        <!--#region SOURCE FILE HASH ENCRYPTED VIA SHA3-512 KECCAK -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="0,10,0,10">
+            <Grid VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  Margin="15, 0, 5, 0">
+                <TextBlock
+                    Background="Transparent"
+                    VerticalAlignment="Stretch"
+                    TextWrapping="Wrap">
+                    <TextBlock.Inlines>
+                        <Run FontWeight="Bold" Foreground="#FFF01D47" FontSize="20" Text="Výsledek ověření souboru elektronickým podpisem" />
+                        <Run FontSize="16" Foreground="AliceBlue" Text="{Binding IsVerificationAlright}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </Grid>
+        </ScrollViewer>
+        <!--#endregion-->
+        <!--#region SOURCE FILE HASH ENCRYPTED VIA SHA3-512 KECCAK -->
+        <ScrollViewer Grid.Row="3"
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="0,10,0,10">
+            <Grid VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  Margin="15, 0, 5, 0">
+                <TextBlock
+                    Background="Transparent"
+                    VerticalAlignment="Stretch"
+                    TextWrapping="Wrap">
+                    <TextBlock.Inlines>
+                        <Run FontWeight="Bold" Foreground="#FFF01D47" FontSize="20" Text="Elektronický podpis" />
+                        <Run FontSize="16" Foreground="AliceBlue" Text="{Binding SourceFileCopyHashEncrypted}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </Grid>
+        </ScrollViewer>
+        <!--#endregion-->
+        <!--#region SOURCE FILE HASH ENCRYPTED VIA SHA3-512 KECCAK AND RSA -->
+        <TextBlock
+            Margin="15,0,0,0"
+            Grid.Row="4"
+            Background="Transparent"
+            VerticalAlignment="Stretch"
+            TextWrapping="Wrap"
+            IsHitTestVisible="True"
+            FontWeight="Bold"
+            Foreground="#FFF01D47"
+            FontSize="20"
+            Text="Zašifrovaný elektronický podpis"/>
+
+        <ScrollViewer 
+            Grid.Row="5"
+            VerticalScrollBarVisibility="Visible"
+            HorizontalScrollBarVisibility="Disabled"
+            Margin="0,0,0,10">
+            <Grid 
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Margin="15, 0, 5, 0">
+                <TextBlock
+                    Background="Transparent"
+                    VerticalAlignment="Stretch"
+                    TextWrapping="Wrap"
+                    IsHitTestVisible="True"
+                    FontSize="16"
+                    Foreground="AliceBlue"
+                    Text="{Binding SourceFileCopyHashDoubleEncrypted}"/>
+            </Grid>
+        </ScrollViewer>
         <!--#endregion-->
     </Grid>
 </Page>

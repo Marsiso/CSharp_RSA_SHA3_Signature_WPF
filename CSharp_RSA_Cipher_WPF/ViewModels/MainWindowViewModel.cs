@@ -6,6 +6,8 @@ using System.Windows.Input;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Crypto.Digests;
 using Microsoft.Win32;
+using System.IO.Compression;
+using System.Linq;
 
 namespace CSharp_RSA_Cipher_WPF.ViewModels
 {
@@ -18,6 +20,9 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         private FileInfo? sourceFileCopyInfo;
         private string sourceFileHashEncrypted = string.Empty;
         private string sourceFileHashDoubleEncrypted = string.Empty;
+        private string sourceFileCopyHashEncrypted = string.Empty;
+        private string sourceFileCopyHashDoubleEncrypted = string.Empty;
+        private string isVerificationAlright;
 
         public BigInteger PublicKey
         {
@@ -38,7 +43,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         }
 
         public string SourceFileHashEncrypted
-        { 
+        {
             get => sourceFileHashEncrypted;
             set => SetProperty(ref sourceFileHashEncrypted, value);
         }
@@ -47,6 +52,24 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         {
             get => sourceFileHashDoubleEncrypted;
             set => SetProperty(ref sourceFileHashDoubleEncrypted, value);
+        }
+
+        public string SourceFileCopyHashEncrypted
+        {
+            get => sourceFileCopyHashEncrypted;
+            set => SetProperty(ref sourceFileCopyHashEncrypted, value);
+        }
+
+        public string SourceFileCopyHashDoubleEncrypted
+        {
+            get => sourceFileCopyHashDoubleEncrypted;
+            set => SetProperty(ref sourceFileCopyHashDoubleEncrypted, value);
+        }
+
+        public string IsVerificationAlright 
+        { 
+            get => isVerificationAlright;
+            set => SetProperty(ref isVerificationAlright, value);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -162,45 +185,81 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             SourceFileInfo = new FileInfo(path);
         }, () => true);
 
-        // TODO
-        public ICommand CommandOpenSourceFileCopy => new CommandHandler(() =>
-        {
-            const string title = "Načtení kopie zdrojového souboru";
-            OpenFileDialog openFileDialog = new()
-            {
-                Multiselect = false,
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                Filter = "Všechny soubory (*.*)|*.*",
-                Title = title
-            };
-
-            if (openFileDialog.ShowDialog() is false)
-                return;
-            var path = openFileDialog.FileName;
-            SourceFileCopyInfo = new FileInfo(path);
-        }, () => true);
-
-        // TODO
-        public ICommand CommandOpenSignatureFile => new CommandHandler(() =>
-        {
-            const string title = "Načtení podpisu kopie zdrojového souboru";
-            OpenFileDialog openFileDialog = new()
-            {
-                Multiselect = false,
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                Filter = "Všechny soubory (*.sign)|*.sign",
-                Title = title
-            };
-
-            if (openFileDialog.ShowDialog() is false)
-                return;
-            var path = openFileDialog.FileName;
-            // TODO
-        }, () => true);
-
         public ICommand CommandOpenZipFile => new CommandHandler(() =>
         {
-            // TODO
+            const string title = "Otevření archivu se zdrojovým souborem a podpisem";
+            OpenFileDialog openFileDialog = new()
+            {
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Archivované soubory (*.zip)|*.zip",
+                Title = title
+            };
+            if (openFileDialog.ShowDialog() is false)
+                return;
+            var zipFileName = openFileDialog.FileName;
+            var dirFileName = zipFileName.Replace(".zip", string.Empty);
+
+            //if (Directory.Exists(dirFileName))
+            //    throw new ArgumentException();
+            ZipFile.ExtractToDirectory(zipFileName, dirFileName, true);
+            //var directoryInfo = new DirectoryInfo(dirFileName);
+            //if ((directoryInfo.Attributes & FileAttributes.Hidden) is not FileAttributes.Hidden)
+            //    directoryInfo.Attributes |= FileAttributes.Hidden;
+            var fileNames = Directory.EnumerateFiles(dirFileName);
+            if (fileNames.Count() is not 2)
+                throw new ArgumentOutOfRangeException();
+
+            if (fileNames.Any(entry => entry.Contains(".sign")) is false)
+                throw new ArgumentException();
+            string? signature = null;
+            string? hash = null;
+            foreach (var fileName in fileNames)
+            {
+                if (fileName.Contains(".sign"))
+                {
+                    signature = File.ReadAllText(fileName);
+                    signature = signature.Split(' ')[1];
+                    var temp = Convert.FromBase64String(signature);
+                    SourceFileCopyHashDoubleEncrypted = System.Text.Encoding.UTF8.GetString(temp);
+                    SourceFileCopyHashEncrypted = RSA.Decrypt(SourceFileCopyHashDoubleEncrypted, PublicKey, SharedKey);
+                }
+                else
+                {
+                    SourceFileCopyInfo = new FileInfo(fileName);
+                    hash = GetHashFromFile(fileName);
+                }
+            }
+
+            bool isAltered = string.Compare(hash, SourceFileCopyHashEncrypted) is 0;
+            IsVerificationAlright = isAltered
+            ? "Verifikace dokončena. Obsah souboru zůstal beze změny."
+            : "Verifikace dokončena. Obsah souboru byl pozměněn.";
+        }, () => true);
+
+        public ICommand CommandSaveZipFile => new CommandHandler(() =>
+        {
+            // Zip file path
+            const string title = "Vytvoření archivu se zdrojovým souborem a podpisem";
+            SaveFileDialog saveFileDialog = new()
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Archivované soubory (*.zip)|*.zip",
+                Title = title
+            };
+            if (saveFileDialog.ShowDialog() is false)
+                return;
+            var path = saveFileDialog.FileName;
+            var directoryPath = path.Replace(".zip", string.Empty);
+            Directory.CreateDirectory(directoryPath);
+            // Create signature string
+            const string msg = "RSA_SHA3-512";
+            var encodedHash = string.Join(' ', msg, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(SourceFileHashDoubleEncrypted)));
+            // Store signature and the copy of source file in .zip file
+            File.WriteAllText(directoryPath + @"\signature.sign", encodedHash);
+            File.Copy(SourceFileInfo.FullName, directoryPath + @"\" + SourceFileInfo.Name);
+            ZipFile.CreateFromDirectory(directoryPath, path);
+            Directory.Delete(directoryPath, true);
         }, () => true);
 
         public ICommand CommandGenerateHashFromSourceFile => new CommandHandler(() =>
