@@ -94,15 +94,12 @@
           HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--#region LABEL MISCELLANEOUS -->
+        <!--#region LABEL PUBLIC KEY -->
         <Border Background="#FF33334C"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
@@ -114,10 +111,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Miscellaneous"
+                <Label Content="Public Key"
                        Grid.Column="1"
                        Style="{StaticResource LblStyle}"
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center"
+                       x:Name="LblPublicKey"
+                       Focusable="True"/>
                 <Button ToolTip="Generate keys."
                         Style="{StaticResource ButtonStyle}"
                         Command="{Binding CommandGenerateKeys}"
@@ -128,82 +127,8 @@
             </Grid>
         </Border>
         <!--#endregion-->
-        <!--#region MISCELLANEOUS CONTENTS -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Hidden"
-                      HorizontalScrollBarVisibility="Disabled"
-                      MaxHeight="300">
-            <Grid VerticalAlignment="Stretch"
-                  HorizontalAlignment="Stretch"
-                  Margin="5, 0, 5, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <!--#region PRIME NUMBER -->
-                <Label Content="p:"
-                       Style="{StaticResource LblStyle}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Top"
-                       Grid.Row="0"
-                       Grid.Column="0"/>
-                <TextBlock Style="{StaticResource TxtBblockStyle}"
-                           Grid.Row="0"
-                           Grid.Column="1"
-                           Text="{Binding P}"
-                           MouseDown="TextBlock_MouseDown"/>
-                <!--#endregion-->
-                <!--#region PRIME NUMBER -->
-                <Label Content="q:"
-                       Style="{StaticResource LblStyle}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Top"
-                       Grid.Row="1"
-                       Grid.Column="0"/>
-                <TextBlock Style="{StaticResource TxtBblockStyle}"
-                           Grid.Row="1"
-                           Grid.Column="1"
-                           Text="{Binding Q}"
-                           MouseDown="TextBlock_MouseDown"/>
-                <!--#endregion-->
-                <!--#region Φ(N) -->
-                <Label Content="Φ(n):"
-                       Style="{StaticResource LblStyle}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Top"
-                       Grid.Row="2"
-                       Grid.Column="0"/>
-                <TextBlock Style="{StaticResource TxtBblockStyle}"
-                           Grid.Row="2"
-                           Grid.Column="1"
-                           Text="{Binding ΦN}"
-                           MouseDown="TextBlock_MouseDown"/>
-                <!--#endregion-->
-            </Grid>
-        </ScrollViewer>
-        <!--#endregion-->
-        <!--#region LABEL PUBLIC KEY -->
-        <Border Background="#FF33334C"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch"
-                Grid.Row="3"
-                BorderThickness="0"
-                Focusable="True">
-            <Label Content="Public key"
-                   Style="{StaticResource LblStyle}"
-                   HorizontalAlignment="Center"
-                   Focusable="True"
-                   x:Name="LblPublicKey"/>
-        </Border>
-        <!--#endregion-->
         <!--#region TEXT BOX PUBLIC KEY -->
-        <ScrollViewer Grid.Row="4"
+        <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled">
             <Grid VerticalAlignment="Stretch"
@@ -252,11 +177,11 @@
             </Grid>
         </ScrollViewer>
         <!--#endregion-->
-        <!--#region LABEL PUBLIC KEY -->
+        <!--#region LABEL PRIVATE KEY -->
         <Border Background="#FF33334C"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
-                Grid.Row="5"
+                Grid.Row="2"
                 BorderThickness="0"
                 Focusable="True">
             <Label Content="Private key"
@@ -265,7 +190,7 @@
         </Border>
         <!--#endregion-->
         <!--#region TEXT BOX PRIVATE KEY -->
-        <ScrollViewer Grid.Row="6"
+        <ScrollViewer Grid.Row="3"
                       VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled">
             <Grid VerticalAlignment="Stretch"
