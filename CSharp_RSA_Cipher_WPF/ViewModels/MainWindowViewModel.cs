@@ -1,209 +1,134 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Input;
 using Org.BouncyCastle.Math;
-using System.Text.RegularExpressions;
+using Org.BouncyCastle.Crypto.Digests;
+using Microsoft.Win32;
 
 namespace CSharp_RSA_Cipher_WPF.ViewModels
 {
     public sealed class MainWindowViewModel : INotifyPropertyChanged
     {
-        private string input;
-        private string output;
-        private BigInteger n;
-        private BigInteger Φn;
-        private BigInteger p;
-        private BigInteger q;
-        private BigInteger e;
-        private BigInteger d;
+        private BigInteger sharedKey = BigInteger.Zero;
+        private BigInteger publicKey = BigInteger.Zero;
+        private BigInteger privateKey = BigInteger.Zero;
+        private FileInfo? sourceFileInfo;
+        private FileInfo? sourceFileCopyInfo;
 
-        public MainWindowViewModel()
+        public BigInteger PublicKey
         {
-            p = BigInteger.Zero;
-            q = BigInteger.Zero;
-            e = BigInteger.Zero;
-            d = BigInteger.Zero;
-            n = BigInteger.Zero;
-            Φn = BigInteger.Zero;
-            input = string.Empty;
-            output = string.Empty;
-            BigIntegerConverter = new BigIntegerConverter();
-
-            E = BigInteger.Zero;
-            D = BigInteger.Zero;
-            N = BigInteger.Zero;
+            get => publicKey;
+            set => SetProperty(ref publicKey, value);
         }
 
-        public string Input
+        public BigInteger PrivateKey
         {
-            get => input;
-            set
-            {
-                SetProperty(ref input, value);
-                Output = string.Empty;
-            }
+            get => privateKey;
+            set => SetProperty(ref privateKey, value);
         }
 
-        public string Output
+        public BigInteger SharedKey
         {
-            get => output;
-            set => SetProperty(ref output, value);
-        }
-
-        public BigInteger N
-        {
-            get => n;
-            set
-            {
-                SetProperty(ref n, value);
-                P = Q = ΦN = BigInteger.Zero;
-            }
-        }
-
-        public BigInteger ΦN
-        {
-            get => Φn;
-            set => SetProperty(ref Φn, value);
-        }
-
-        public BigInteger P
-        {
-            get => p;
-            set => SetProperty(ref p, value);
-        }
-
-        public BigInteger Q
-        {
-            get => q;
-            set => SetProperty(ref q, value);
-        }
-
-        public BigInteger E
-        {
-            get => e;
-            set
-            {
-                SetProperty(ref e, value);
-                P = Q = ΦN = BigInteger.Zero;
-            }
-        }
-
-        public BigInteger D
-        {
-            get => d;
-            set
-            {
-                SetProperty(ref d, value);
-                P = Q = ΦN = BigInteger.Zero;
-            }
+            get => sharedKey;
+            set => SetProperty(ref sharedKey, value);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public BigIntegerConverter BigIntegerConverter { get; set; }
+        public ICommand CommandGenerateKeypPairs => new CommandHandler(() => (PublicKey, PrivateKey, SharedKey) = RSA.GenerateKeyPairs(), () => true);
 
-        public ICommand CommandOpenFromFileEncryption
+        public ICommand CommandSavePublicKeyPair => new CommandHandler(() => 
         {
-            get => new CommandHandler(() =>
+            const string title = "Vepsání veřejného klíče do souboru";
+            SaveFileDialog saveFileDialog = new()
             {
-                OpenFileDialog openFileDialog = new();
-                openFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    Input = File.ReadAllText(openFileDialog.FileName);
-                }
-            }, () => true);
-        }
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Soubory veřejného klíče (*.pub)|*.pub",
+                Title = title
+            };
 
-        public ICommand CommandOpenFromFileDecryption
-        {
-            get => new CommandHandler(() =>
+            if (saveFileDialog.ShowDialog() is false)
+                return;
+            var path = saveFileDialog.FileName;
+            const string msg = "RSA";
+            var publicKeyBytes = System.Text.Encoding.UTF8.GetBytes(PublicKey.ToString());
+            var sharedKeyBytes = System.Text.Encoding.UTF8.GetBytes(SharedKey.ToString());
+            var lines = new[]
             {
-                OpenFileDialog openFileDialog = new();
-                openFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    string str = File.ReadAllText(openFileDialog.FileName);
-                    Regex regex = new Regex("[^0-9 ]+");
-                    if (regex.IsMatch(str) is true)
-                    {
-                        Input = string.Empty;
-                        return;
-                    }
-                    Input = str;
-                }
-            }, () => true);
-        }
-
-        public ICommand CommandSaveToFile
-        {
-            get => new CommandHandler(() =>
-            {
-                SaveFileDialog saveFileDialog = new();
-                saveFileDialog.Filter = "Text file (*.txt)|*.txt|Data file (*.dat)|*.dat";
-                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (saveFileDialog.ShowDialog() == true)
-                    File.WriteAllText(saveFileDialog.FileName, Output);
-            }, () => true);
-        }
-
-        public ICommand CommandGenerateKeys => new CommandHandler(() =>
-        {
-            (p, q) = RSA.GetPQ();
-            n = RSA.GetN(p, q);
-            Φn = RSA.GetΦ(p, q);
-            e = RSA.GenereatePublicKey(Φn);
-            d = RSA.GenereatePrivateKey(e, Φn);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(P)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Q)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(N)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ΦN)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(E)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(D)));
+                string.Join(' ', msg, Convert.ToBase64String(publicKeyBytes)),
+                string.Join(' ', msg, Convert.ToBase64String(sharedKeyBytes))
+            };
+            File.WriteAllLines(path, lines);
         }, () => true);
 
-        public ICommand CommandEncrypt => new CommandHandler(() =>
+        public ICommand CommandOpenPublicKeyPair => new CommandHandler(() =>
         {
-            if (input.Equals(String.Empty))
+            const string title = "Přečtení veřejného klíče ze souboru";
+            OpenFileDialog openFileDialog = new()
             {
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Soubory veřejného klíče (*.pub)|*.pub",
+                Title = title
+            };
+
+            if (openFileDialog.ShowDialog() is false)
                 return;
-            }
-            if (e.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
-            {
-                const string errmsg = "Public key pair exception. Keys unset? Set private key pair values!!";
-                Output = errmsg;
-                return;
-            }
-            Output = RSA.Encrypt(input, e, n);
+            var path = openFileDialog.FileName;
+            var lines = File.ReadAllLines(openFileDialog.FileName);
+            var publicKeyBytes = Convert.FromBase64String(lines[0].Split(' ')[1]);
+            var sharedKeyBytes = Convert.FromBase64String(lines[1].Split(' ')[1]);
+
+            PublicKey = new BigInteger(System.Text.Encoding.UTF8.GetString(publicKeyBytes));
+            SharedKey = new BigInteger(System.Text.Encoding.UTF8.GetString(sharedKeyBytes));
         }, () => true);
 
-        public ICommand CommandDecrypt => new CommandHandler(() =>
+        public ICommand CommandSavePrivateKeyPair => new CommandHandler(() =>
         {
-            if (input.Equals(String.Empty))
+            const string title = "Vepsání soukromého klíče do souboru";
+            SaveFileDialog saveFileDialog = new()
             {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Soubory soukromého klíče (*.priv)|*.priv",
+                Title = title
+            };
+
+            if (saveFileDialog.ShowDialog() is false)
                 return;
-            }
-            if (d.Equals(BigInteger.Zero) || n.Equals(BigInteger.Zero))
+            var path = saveFileDialog.FileName;
+            const string msg = "RSA";
+            var privateKeyBytes = System.Text.Encoding.UTF8.GetBytes(PrivateKey.ToString());
+            var sharedKeyBytes = System.Text.Encoding.UTF8.GetBytes(SharedKey.ToString());
+            var lines = new[]
             {
-                const string errmsg = "Private key pair exception. Keys unset? Set private key pair values!!";
-                Output = errmsg;
+                string.Join(' ', msg, Convert.ToBase64String(privateKeyBytes)),
+                string.Join(' ', msg, Convert.ToBase64String(sharedKeyBytes))
+            };
+            File.WriteAllLines(path, lines);
+        }, () => true);
+
+        public ICommand CommandOpenPrivateKeyPair => new CommandHandler(() =>
+        {
+            const string title = "Přečtení soukromého klíče ze souboru";
+            OpenFileDialog openFileDialog = new()
+            {
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Soubory soukromého klíče (*.priv)|*.priv",
+                Title = title
+            };
+
+            if (openFileDialog.ShowDialog() is false)
                 return;
-            }
-            try
-            {
-                Output = RSA.Decrypt(input, d, n);
-            }
-            catch (Exception ex)
-            {
-                const string errmsg = "Block formatting exception. Trailing whitespace? Revise your input!!";
-                Output = errmsg;
-            }
+            var path = openFileDialog.FileName;
+            var lines = File.ReadAllLines(openFileDialog.FileName);
+            var privateKeyBytes = Convert.FromBase64String(lines[0].Split(' ')[1]);
+            var sharedKeyBytes = Convert.FromBase64String(lines[1].Split(' ')[1]);
+
+            PrivateKey = new BigInteger(System.Text.Encoding.UTF8.GetString(privateKeyBytes));
+            SharedKey = new BigInteger(System.Text.Encoding.UTF8.GetString(sharedKeyBytes));
         }, () => true);
 
         public void SetProperty<T>(ref T store, T value, [CallerMemberName] string name = null)
@@ -213,6 +138,30 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                 store = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        public FileInfo SourceFileInfo
+        {
+            get => sourceFileInfo;
+            set => SetProperty(ref sourceFileInfo, value);
+        }
+
+        public FileInfo SourceFileCopyInfo
+        {
+            get => sourceFileCopyInfo;
+            set => SetProperty(ref sourceFileCopyInfo, value);
+        }
+
+        public string GetHashFromFile(string path)
+        {
+            var hashAlgorithm = new Sha3Digest(512);
+            var fileBytes = File.ReadAllBytes(path);
+            hashAlgorithm.BlockUpdate(fileBytes, 0, fileBytes.Length);
+            var hash = new byte[64]; // 512b / 8B = 64b
+            hashAlgorithm.DoFinal(hash, 0);
+            return BitConverter.ToString(hash)
+                .Replace("-", "")
+                .ToLowerInvariant();
         }
     }
 }

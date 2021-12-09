@@ -20,25 +20,15 @@ namespace CSharp_RSA_Cipher_WPF.Views
     /// <summary>
     /// Interaction logic for EncryptionPage.xaml
     /// </summary>
-    public partial class EncryptionPage : Page
+    public partial class SignatureGeneratorPage : Page
     {
         readonly MainWindowViewModel mainWindowViewModel;
 
-        public EncryptionPage(MainWindowViewModel instance)
+        public SignatureGeneratorPage(MainWindowViewModel instance)
         {
             mainWindowViewModel = instance;
             DataContext = mainWindowViewModel;
             InitializeComponent();
-        }
-
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            TextBox? textBox = sender as TextBox;
-            if (textBox is null || e.Key.Equals(Key.Enter) is false)
-            {
-                return;
-            }
-            _ = LblOutput.Focus();
         }
     }
 }

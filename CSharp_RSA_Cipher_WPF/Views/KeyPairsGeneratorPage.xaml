@@ -1,17 +1,16 @@
-﻿<Page x:Class="CSharp_RSA_Cipher_WPF.Views.GeneratorPage"
+﻿<Page x:Class="CSharp_RSA_Cipher_WPF.Views.KeyPairsGeneratorPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:CSharp_RSA_Cipher_WPF.Views"
-      xmlns:models="clr-namespace:CSharp_RSA_Cipher_WPF.ViewModels"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:vm="clr-namespace:CSharp_RSA_Cipher_WPF.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="690" d:DesignWidth="1050"
       Background="Transparent"
       ShowsNavigationUI="False">
 
     <Page.Resources>
-        <models:BigIntegerConverter x:Key="BigIntConverter"/>
+        <vm:BigIntegerConverter x:Key="BigIntegerConverter"/>
         <!--#region LABEL -->
         <Style TargetType="{x:Type Label}" x:Key="LblStyle">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -107,22 +106,38 @@
                 BorderThickness="0">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Public Key"
+                <Label Content="Veřejný klíč"
                        Grid.Column="1"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Center"
                        x:Name="LblPublicKey"
                        Focusable="True"/>
-                <Button ToolTip="Generate keys."
+                <Button ToolTip="Vygenerovat klíčové páry."
                         Style="{StaticResource ButtonStyle}"
-                        Command="{Binding CommandGenerateKeys}"
+                        Command="{Binding CommandGenerateKeypPairs}"
                         Grid.Column="2">
                     <Image Style="{StaticResource ImageStyle}"
-                           Source="/Assets/Icon_Play_White.png"/>
+                           Source="/Assets/Icon_Plus.png"/>
+                </Button>
+                <Button ToolTip="Načíst veřejný klíčový pár ze souboru."
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding CommandOpenPublicKeyPair}"
+                        Grid.Column="3">
+                    <Image Style="{StaticResource ImageStyle}"
+                           Source="/Assets/Icon_UploadFile.png"/>
+                </Button>
+                <Button ToolTip="Uložit veřejný klíčový pár do souboru."
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding CommandSavePublicKeyPair}"
+                        Grid.Column="4">
+                    <Image Style="{StaticResource ImageStyle}"
+                           Source="/Assets/Icon_SaveFile.png"/>
                 </Button>
             </Grid>
         </Border>
@@ -142,34 +157,34 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <!--#region N -->
+                <!--#region SHARED KEY -->
                 <Label Content="n:"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
-                       Grid.Row="0"
+                       Grid.Row="1"
                        Grid.Column="0"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
-                         Grid.Row="0"
+                         Grid.Row="1"
                          VerticalScrollBarVisibility="Hidden"
-                         Text="{Binding Path=N, Converter={StaticResource BigIntConverter}}"
+                         Text="{Binding Path=SharedKey, Converter={StaticResource BigIntegerConverter}}"
                          KeyDown="TextBox_KeyDown"
                          PreviewTextInput="NumberValidationTextBox"
                          DataObject.Pasting="NumberValidationTextBox"/>
                 <!--#endregion-->
-                <!--#region E -->
+                <!--#region PUBLIC KEY -->
                 <Label Content="e:"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Grid.Column="0"
-                       Grid.Row="1"/>
+                       Grid.Row="0"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
-                         Grid.Row="1"
+                         Grid.Row="0"
                          VerticalScrollBarVisibility="Hidden"
-                         Text="{Binding Path=E, Converter={StaticResource BigIntConverter}}"
+                         Text="{Binding Path=PublicKey, Converter={StaticResource BigIntegerConverter}}"
                          KeyDown="TextBox_KeyDown"
                          PreviewTextInput="NumberValidationTextBox"
                          DataObject.Pasting="NumberValidationTextBox"/>
@@ -182,11 +197,34 @@
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
                 Grid.Row="2"
-                BorderThickness="0"
-                Focusable="True">
-            <Label Content="Private key"
-                   Style="{StaticResource LblStyle}"
-                   HorizontalAlignment="Center"/>
+                BorderThickness="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Soukromý klíč"
+                       Grid.Column="1"
+                       Style="{StaticResource LblStyle}"
+                       HorizontalAlignment="Center"
+                       Focusable="True"/>
+                <Button ToolTip="Načíst soukromý klíčový pár ze souboru."
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding CommandOpenPrivateKeyPair}"
+                        Grid.Column="2">
+                    <Image Style="{StaticResource ImageStyle}"
+                           Source="/Assets/Icon_UploadFile.png"/>
+                </Button>
+                <Button ToolTip="Uložit soukromý klíčový pár do souboru."
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding CommandSavePrivateKeyPair}"
+                        Grid.Column="3">
+                    <Image Style="{StaticResource ImageStyle}"
+                           Source="/Assets/Icon_SaveFile.png"/>
+                </Button>
+            </Grid>
         </Border>
         <!--#endregion-->
         <!--#region TEXT BOX PRIVATE KEY -->
@@ -204,34 +242,34 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <!--#region N -->
+                <!--#region SHARED KEY -->
                 <Label Content="n:"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
-                       Grid.Row="0"
+                       Grid.Row="1"
                        Grid.Column="0"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
-                         Grid.Row="0"
+                         Grid.Row="1"
                          VerticalScrollBarVisibility="Hidden"
-                         Text="{Binding Path=N, Converter={StaticResource BigIntConverter}}"
+                         Text="{Binding Path=SharedKey, Converter={StaticResource BigIntegerConverter}}"
                          KeyDown="TextBox_KeyDown"
                          PreviewTextInput="NumberValidationTextBox"
                          DataObject.Pasting="NumberValidationTextBox"/>
                 <!--#endregion-->
-                <!--#region D -->
+                <!--#region PRIVATE KEY -->
                 <Label Content="d:"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Grid.Column="0"
-                       Grid.Row="1"/>
+                       Grid.Row="0"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
-                         Grid.Row="1"
+                         Grid.Row="0"
                          VerticalScrollBarVisibility="Hidden"
-                         Text="{Binding Path=D, Converter={StaticResource BigIntConverter}}"
+                         Text="{Binding Path=PrivateKey, Converter={StaticResource BigIntegerConverter}}"
                          KeyDown="TextBox_KeyDown"
                          PreviewTextInput="NumberValidationTextBox"
                          DataObject.Pasting="NumberValidationTextBox"/>

@@ -11,12 +11,19 @@
     <None Remove="Assets\Icon_Decryption_White.png" />
     <None Remove="Assets\Icon_Encryption_White.png" />
     <None Remove="Assets\Icon_Exit_White.png" />
-    <None Remove="Assets\Icon_Generate_White.png" />
+    <None Remove="Assets\Icon_Keys.png" />
     <None Remove="Assets\Icon_Menu_White.png" />
     <None Remove="Assets\Icon_Open_White.png" />
     <None Remove="Assets\Icon_Play_White.png" />
+    <None Remove="Assets\Icon_Plus.png" />
+    <None Remove="Assets\Icon_SaveFile.png" />
     <None Remove="Assets\Icon_Save_White.png" />
+    <None Remove="Assets\Icon_Signature.png" />
     <None Remove="Assets\Icon_TaskBar.ico" />
+    <None Remove="Assets\Icon_UploadFile.png" />
+    <None Remove="Assets\Icon_Verification.png" />
+    <None Remove="Assets\Icon_VerifyFile.png" />
+    <None Remove="Assets\Icon_ZipFIle.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,15 +31,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\Icon_Decryption_White.png" />
-    <Resource Include="Assets\Icon_Encryption_White.png" />
     <Resource Include="Assets\Icon_Exit_White.png" />
-    <Resource Include="Assets\Icon_Generate_White.png" />
+    <Resource Include="Assets\Icon_Keys.png" />
     <Resource Include="Assets\Icon_Menu_White.png" />
-    <Resource Include="Assets\Icon_Open_White.png" />
-    <Resource Include="Assets\Icon_Play_White.png" />
-    <Resource Include="Assets\Icon_Save_White.png" />
+    <Resource Include="Assets\Icon_Plus.png" />
+    <Resource Include="Assets\Icon_SaveFile.png" />
+    <Resource Include="Assets\Icon_Signature.png" />
     <Resource Include="Assets\Icon_TaskBar.ico" />
+    <Resource Include="Assets\Icon_UploadFile.png" />
+    <Resource Include="Assets\Icon_Verification.png" />
+    <Resource Include="Assets\Icon_VerifyFile.png" />
+    <Resource Include="Assets\Icon_ZipFIle.png" />
   </ItemGroup>
 
 </Project>

@@ -1,34 +1,30 @@
 ﻿using CSharp_RSA_Cipher_WPF.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CSharp_RSA_Cipher_WPF.Views
 {
     /// <summary>
-    /// Interaction logic for DecryptionPage.xaml
+    /// Interaction logic for GeneratorPage.xaml
     /// </summary>
-    public partial class DecryptionPage : Page
+    public partial class KeyPairsGeneratorPage : Page
     {
         readonly MainWindowViewModel mainWindowViewModel;
 
-        public DecryptionPage(MainWindowViewModel instance)
+        public KeyPairsGeneratorPage(MainWindowViewModel instance)
         {
             mainWindowViewModel = instance;
             DataContext = mainWindowViewModel;
             InitializeComponent();
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock? textBlock = sender as TextBlock;
+            Clipboard.SetText(textBlock?.Text ?? string.Empty);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -38,12 +34,12 @@ namespace CSharp_RSA_Cipher_WPF.Views
             {
                 return;
             }
-            _ = LblInput.Focus();
+            _ = LblPublicKey.Focus();
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9 ]+");
+            Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
@@ -52,7 +48,7 @@ namespace CSharp_RSA_Cipher_WPF.Views
             if (e.DataObject.GetDataPresent(typeof(String)))
             {
                 String text = (String)e.DataObject.GetData(typeof(String));
-                Regex regex = new Regex("[^0-9 ]+");
+                Regex regex = new Regex("[^0-9]+");
                 if (regex.IsMatch(text) is true)
                 {
                     e.CancelCommand();
@@ -62,11 +58,6 @@ namespace CSharp_RSA_Cipher_WPF.Views
             {
                 e.CancelCommand();
             }
-        }
-
-        private void Page_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-
         }
     }
 }

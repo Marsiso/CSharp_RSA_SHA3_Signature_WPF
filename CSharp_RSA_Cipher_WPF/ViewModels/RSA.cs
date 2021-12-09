@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Org.BouncyCastle.Math;
+using System;
 using System.Security.Cryptography;
-using Org.BouncyCastle.Math;
 using System.Text;
-using StringUtilities = Org.BouncyCastle.Utilities.Strings;
 using BigIntegerMath = Org.BouncyCastle.Utilities.BigIntegers;
+using StringUtilities = Org.BouncyCastle.Utilities.Strings;
 
 namespace CSharp_RSA_Cipher_WPF.ViewModels
 {
@@ -28,10 +28,10 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                     .ToString();
             }
 
-            return String.Join(' ', encrypted);
+            return string.Join(' ', encrypted);
         }
 
-        public static BigInteger ToDecimalFromBinary(this string value)
+        private static BigInteger ToDecimalFromBinary(this string value)
         {
             BigInteger bigInteger = BigInteger.Zero;
             foreach (char c in value)
@@ -57,14 +57,13 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                     .ToASCIIFromBinary();
             }
 
-            return String.Join(string.Empty, decoded);
+            return string.Join(string.Empty, decoded);
         }
 
-        public static string ToBinaryFromDecimal(this BigInteger bigInteger)
+        private static string ToBinaryFromDecimal(this BigInteger bigInteger)
         {
-            var stringBuilder = new StringBuilder();
-            byte[] bytes = bigInteger.ToByteArray();
-            foreach (var b in bytes)
+            StringBuilder stringBuilder = new();
+            foreach (var b in bigInteger.ToByteArray())
             {
                 _ = stringBuilder.Append(Convert.ToString(b, 2).PadLeft(8, '0'));
             }
@@ -72,9 +71,9 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return stringBuilder.ToString().PadLeft(80, '0');
         }
 
-        public static string ToBinary8bFrom11b(this string str)
+        private static string ToBinary8bFrom11b(this string str)
         {
-            StringBuilder stringBuilder = new StringBuilder(capacity: 56);
+            StringBuilder stringBuilder = new(capacity: 56);
             for (int i = 3; i < str.Length; i += 11)
             {
                 for (int j = i + 3; j < i + 11; ++j)
@@ -86,12 +85,12 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return stringBuilder.ToString();
         }
 
-        public static string ToASCIIFromBinary(this string str)
+        private static string ToASCIIFromBinary(this string str)
         {
             byte[] bytes = new byte[7];
             for (int i = 0; i < 7; ++i)
             {
-                StringBuilder stringBuilder = new StringBuilder(capacity: 8);
+                StringBuilder stringBuilder = new(capacity: 8);
                 for (int j = i * 8; j < (i * 8) + 8; ++j)
                 {
                     _ = stringBuilder.Append(str[j]);
@@ -103,29 +102,9 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return decoded;
         }
 
-        public static BigInteger GenereatePrivateKey(in BigInteger e, in BigInteger Φ) => e.ModInverse(Φ);
-
-        public static BigInteger GenereatePublicKey(in BigInteger Φ)
+        private static (BigInteger, BigInteger) GeneratePrimeNumbersPQ()
         {
-            BigInteger e;
-            Org.BouncyCastle.Security.SecureRandom random = new();
-            BigInteger upperBound = Φ.Add(BigIntegerMath.One.Negate());
-            do
-                e = BigIntegerMath.CreateRandomInRange(BigInteger.Two, upperBound, random);
-            while (!e.Gcd(Φ).Equals(BigInteger.One));
-
-            return e;
-        }
-
-        public static BigInteger GetN(in BigInteger p, in BigInteger q) => p.Multiply(q);
-
-        public static BigInteger GetΦ(in BigInteger p, in BigInteger q) => p
-            .Add(BigIntegerMath.One.Negate())
-            .Multiply(q.Add(BigIntegerMath.One.Negate()));
-
-        public static (BigInteger, BigInteger) GetPQ()
-        {
-            const int lowerBound = 512, upperBound = 1024;
+            const int lowerBound = 2048, upperBound = 3072;
 
             int lenBitsP = RandomNumberGenerator.GetInt32(lowerBound, upperBound);
             int lenBitsQ = RandomNumberGenerator.GetInt32(lowerBound, upperBound);
@@ -134,8 +113,36 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             BigInteger p = BigInteger.ProbablePrime(lenBitsP, rnd);
             BigInteger q = BigInteger.ProbablePrime(lenBitsQ, rnd);
             while (p.Equals(q))
+            {
                 q = BigInteger.ProbablePrime(lenBitsQ, rnd);
+            }
+
             return (p, q);
+        }
+
+        public static (BigInteger, BigInteger, BigInteger) GenerateKeyPairs()
+        {
+            BigInteger publicKey, privateKey, sharedKey;
+            // Prime numbers and phi
+            var (p, q) = GeneratePrimeNumbersPQ();
+            var phi = p.Add(BigIntegerMath.One.Negate()).Multiply(q.Add(BigIntegerMath.One.Negate()));
+
+            // Shared key
+            sharedKey = p.Multiply(q);
+
+            // Public key
+            Org.BouncyCastle.Security.SecureRandom random = new();
+            BigInteger upperBound = phi.Add(BigIntegerMath.One.Negate());
+            do
+            {
+                publicKey = BigIntegerMath.CreateRandomInRange(BigInteger.Two, upperBound, random);
+            }
+            while (!publicKey.Gcd(phi).Equals(BigInteger.One));
+
+            // Private key
+            privateKey = publicKey.ModInverse(phi);
+
+            return (publicKey, privateKey, sharedKey);
         }
     }
 }

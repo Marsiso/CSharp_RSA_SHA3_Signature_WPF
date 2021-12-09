@@ -22,7 +22,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         Icon="/Assets/Icon_TaskBar.ico"
-        Title="RSA Cipher">
+        Title="Elektronický podpis">
 
     <Window.DataContext>
         <models:MainWindowViewModel x:Name="mainWindowViewModel"/>
@@ -121,7 +121,7 @@
                 </Label>
             </StackPanel>
             <!--#endregion-->
-            <!--#region ENCRYPTION BUTTON -->
+            <!--#region SIGNATURE BUTTON -->
             <Border DockPanel.Dock="Top"
                     Style="{StaticResource BorderMenuStyle}"
                     x:Name="BtnPageEncryption"
@@ -131,14 +131,14 @@
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
-                    <Image Source="/Assets/icon_Encryption_White.png"
+                    <Image Source="/Assets/Icon_Signature.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Label Content="Encryption"
+                    <Label Content="Podpis"
                             Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->          
-            <!--#region DECRYPTION BUTTON -->
+            <!--#region VERIFICATION BUTTON -->
             <Border DockPanel.Dock="Top"
                     Style="{StaticResource BorderMenuStyle}"
                     x:Name="BtnPageDecryption"
@@ -147,9 +147,9 @@
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
-                    <Image Source="/Assets/Icon_Decryption_White.png"
+                    <Image Source="/Assets/Icon_Verification.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Label Content="Decryption"
+                    <Label Content="Verifikace"
                            Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
@@ -163,9 +163,9 @@
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
-                    <Image Source="/Assets/Icon_Generate_White.png"
+                    <Image Source="/Assets/Icon_Keys.png"
                            Style="{StaticResource ImageMenuStyle}"/>
-                    <Label Content="Keys"
+                    <Label Content="Klíče"
                             Style="{StaticResource LblMenuStyle}"/>
                 </StackPanel>
             </Border>
