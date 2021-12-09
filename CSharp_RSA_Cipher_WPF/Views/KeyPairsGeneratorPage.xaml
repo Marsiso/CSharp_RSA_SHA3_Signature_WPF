@@ -17,9 +17,9 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
         </Style>
         <!--#endregion-->
         <!--#region TEXTBOX -->
@@ -31,14 +31,16 @@
             <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
             <Setter Property="MaxLines" Value="2147483647"/>
             <Setter Property="MaxLength" Value="2147483647"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Margin" Value="5, 10, 20, 10"/>
+            <Setter Property="Margin" Value="5, 6, 20, 10"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="CaretBrush" Value="#FFF01D47"/>
+            <Setter Property="SelectionTextBrush" Value="#FFF01D47"/>
+            <Setter Property="SelectionBrush" Value="#FFF01D47"/>
         </Style>
         <!--#endregion-->
         <!--#region MENU IMAGES-->
@@ -79,7 +81,7 @@
         <Style TargetType="{x:Type TextBlock}" x:Key="TxtBblockStyle">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
@@ -144,11 +146,12 @@
         <!--#endregion-->
         <!--#region TEXT BOX PUBLIC KEY -->
         <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Hidden"
-                      HorizontalScrollBarVisibility="Disabled">
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="0,10,0,10">
             <Grid VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
-                  Margin="35, 0, 5, 0">
+                  Margin="10, 0, 5, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -158,12 +161,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <!--#region SHARED KEY -->
-                <Label Content="n:"
+                <Label Content="Sdílený klíč    "
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Grid.Row="1"
-                       Grid.Column="0"/>
+                       Grid.Column="0"
+                       Foreground="#FFF01D47"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
                          Grid.Row="1"
@@ -174,12 +178,13 @@
                          DataObject.Pasting="NumberValidationTextBox"/>
                 <!--#endregion-->
                 <!--#region PUBLIC KEY -->
-                <Label Content="e:"
+                <Label Content="Veřejný klíč    "
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Grid.Column="0"
-                       Grid.Row="0"/>
+                       Grid.Row="0"
+                       Foreground="#FFF01D47"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
                          Grid.Row="0"
@@ -229,11 +234,12 @@
         <!--#endregion-->
         <!--#region TEXT BOX PRIVATE KEY -->
         <ScrollViewer Grid.Row="3"
-                      VerticalScrollBarVisibility="Hidden"
-                      HorizontalScrollBarVisibility="Disabled">
+                      VerticalScrollBarVisibility="Visible"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="0,10,0,10">
             <Grid VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
-                  Margin="35, 0, 5, 0">
+                  Margin="10, 0, 5, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -243,12 +249,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <!--#region SHARED KEY -->
-                <Label Content="n:"
+                <Label Content="Sdílený klíč    "
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Grid.Row="1"
-                       Grid.Column="0"/>
+                       Grid.Column="0"
+                       Foreground="#FFF01D47"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
                          Grid.Row="1"
@@ -259,12 +266,13 @@
                          DataObject.Pasting="NumberValidationTextBox"/>
                 <!--#endregion-->
                 <!--#region PRIVATE KEY -->
-                <Label Content="d:"
+                <Label Content="Soukromý klíč"
                        Style="{StaticResource LblStyle}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Grid.Column="0"
-                       Grid.Row="0"/>
+                       Grid.Row="0"
+                       Foreground="#FFF01D47"/>
                 <TextBox Style="{StaticResource TxtBoxStyle}"
                          Grid.Column="1"
                          Grid.Row="0"

@@ -44,4 +44,8 @@
     <Resource Include="Assets\Icon_ZipFIle.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

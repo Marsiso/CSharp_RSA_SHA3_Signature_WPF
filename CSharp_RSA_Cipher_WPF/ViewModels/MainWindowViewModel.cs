@@ -16,6 +16,8 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         private BigInteger privateKey = BigInteger.Zero;
         private FileInfo? sourceFileInfo;
         private FileInfo? sourceFileCopyInfo;
+        private string sourceFileHashEncrypted = string.Empty;
+        private string sourceFileHashDoubleEncrypted = string.Empty;
 
         public BigInteger PublicKey
         {
@@ -35,11 +37,23 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             set => SetProperty(ref sharedKey, value);
         }
 
+        public string SourceFileHashEncrypted
+        { 
+            get => sourceFileHashEncrypted;
+            set => SetProperty(ref sourceFileHashEncrypted, value);
+        }
+
+        public string SourceFileHashDoubleEncrypted
+        {
+            get => sourceFileHashDoubleEncrypted;
+            set => SetProperty(ref sourceFileHashDoubleEncrypted, value);
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand CommandGenerateKeypPairs => new CommandHandler(() => (PublicKey, PrivateKey, SharedKey) = RSA.GenerateKeyPairs(), () => true);
 
-        public ICommand CommandSavePublicKeyPair => new CommandHandler(() => 
+        public ICommand CommandSavePublicKeyPair => new CommandHandler(() =>
         {
             const string title = "Vepsání veřejného klíče do souboru";
             SaveFileDialog saveFileDialog = new()
@@ -129,6 +143,70 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
             PrivateKey = new BigInteger(System.Text.Encoding.UTF8.GetString(privateKeyBytes));
             SharedKey = new BigInteger(System.Text.Encoding.UTF8.GetString(sharedKeyBytes));
+        }, () => true);
+
+        public ICommand CommandOpenSourceFile => new CommandHandler(() =>
+        {
+            const string title = "Načtení zdrojového souboru";
+            OpenFileDialog openFileDialog = new()
+            {
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Všechny soubory (*.*)|*.*",
+                Title = title
+            };
+
+            if (openFileDialog.ShowDialog() is false)
+                return;
+            var path = openFileDialog.FileName;
+            SourceFileInfo = new FileInfo(path);
+        }, () => true);
+
+        // TODO
+        public ICommand CommandOpenSourceFileCopy => new CommandHandler(() =>
+        {
+            const string title = "Načtení kopie zdrojového souboru";
+            OpenFileDialog openFileDialog = new()
+            {
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Všechny soubory (*.*)|*.*",
+                Title = title
+            };
+
+            if (openFileDialog.ShowDialog() is false)
+                return;
+            var path = openFileDialog.FileName;
+            SourceFileCopyInfo = new FileInfo(path);
+        }, () => true);
+
+        // TODO
+        public ICommand CommandOpenSignatureFile => new CommandHandler(() =>
+        {
+            const string title = "Načtení podpisu kopie zdrojového souboru";
+            OpenFileDialog openFileDialog = new()
+            {
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "Všechny soubory (*.sign)|*.sign",
+                Title = title
+            };
+
+            if (openFileDialog.ShowDialog() is false)
+                return;
+            var path = openFileDialog.FileName;
+            // TODO
+        }, () => true);
+
+        public ICommand CommandOpenZipFile => new CommandHandler(() =>
+        {
+            // TODO
+        }, () => true);
+
+        public ICommand CommandGenerateHashFromSourceFile => new CommandHandler(() =>
+        {
+            SourceFileHashEncrypted = GetHashFromFile(SourceFileInfo.FullName);
+            SourceFileHashDoubleEncrypted = RSA.Encrypt(sourceFileHashEncrypted, PrivateKey, SharedKey);
         }, () => true);
 
         public void SetProperty<T>(ref T store, T value, [CallerMemberName] string name = null)
