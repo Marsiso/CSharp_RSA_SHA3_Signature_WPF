@@ -16,7 +16,7 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
         </Style>
         <!--#endregion-->
         <!--#region TEXTBOX -->
@@ -28,14 +28,14 @@
             <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
             <Setter Property="MaxLines" Value="2147483647"/>
             <Setter Property="MaxLength" Value="2147483647"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Margin" Value="10"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="CaretBrush" Value="AliceBlue"/>
         </Style>
         <!--#endregion-->
         <!--#region MENU IMAGES-->
@@ -122,7 +122,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--#region LABEL SOURCE FILE -->
@@ -245,58 +247,47 @@
                     Text="{Binding SourceFileCopyInfo.LastAccessTime, Mode=OneWay}"/>
         </Grid>
         <!--#endregion-->
-        <!--#region SOURCE FILE HASH ENCRYPTED VIA SHA3-512 KECCAK -->
-        <ScrollViewer Grid.Row="2"
-                      VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Margin="0,10,0,10">
-            <Grid VerticalAlignment="Stretch"
-                  HorizontalAlignment="Stretch"
-                  Margin="15, 0, 5, 0">
+        <!--#region SOURCE FILE HASH VERIFICATION RESULT -->
+        <TextBlock
+            Margin="15,0,0,0"
+            Grid.Row="2"
+            Background="Transparent"
+            TextWrapping="Wrap"
+            FontWeight="Bold"
+            Foreground="#FFF01D47"
+            FontSize="20"
+            Text="Výsledek ověření souboru elektronickým podpisem"/>
+
+        <ScrollViewer 
+            Grid.Row="3"
+            VerticalScrollBarVisibility="Visible"
+            HorizontalScrollBarVisibility="Disabled"
+            Margin="0,0,0,10">
+            <Grid 
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Margin="15, 0, 5, 0">
                 <TextBlock
                     Background="Transparent"
                     VerticalAlignment="Stretch"
-                    TextWrapping="Wrap">
-                    <TextBlock.Inlines>
-                        <Run FontWeight="Bold" Foreground="#FFF01D47" FontSize="20" Text="Výsledek ověření souboru elektronickým podpisem" />
-                        <Run FontSize="16" Foreground="AliceBlue" Text="{Binding IsVerificationAlright}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
+                    TextWrapping="Wrap"
+                    IsHitTestVisible="True"
+                    FontSize="16"
+                    Foreground="AliceBlue"
+                    Text="{Binding IsVerificationAlright}"/>
             </Grid>
         </ScrollViewer>
         <!--#endregion-->
-        <!--#region SOURCE FILE HASH ENCRYPTED VIA SHA3-512 KECCAK -->
-        <ScrollViewer Grid.Row="3"
-                      VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Margin="0,10,0,10">
-            <Grid VerticalAlignment="Stretch"
-                  HorizontalAlignment="Stretch"
-                  Margin="15, 0, 5, 0">
-                <TextBlock
-                    Background="Transparent"
-                    VerticalAlignment="Stretch"
-                    TextWrapping="Wrap">
-                    <TextBlock.Inlines>
-                        <Run FontWeight="Bold" Foreground="#FFF01D47" FontSize="20" Text="Elektronický podpis" />
-                        <Run FontSize="16" Foreground="AliceBlue" Text="{Binding SourceFileCopyHashEncrypted}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
-            </Grid>
-        </ScrollViewer>
-        <!--#endregion-->
-        <!--#region SOURCE FILE HASH ENCRYPTED VIA SHA3-512 KECCAK AND RSA -->
+        <!--#region SOURCE FILE COPY HASH -->
         <TextBlock
             Margin="15,0,0,0"
             Grid.Row="4"
             Background="Transparent"
-            VerticalAlignment="Stretch"
             TextWrapping="Wrap"
-            IsHitTestVisible="True"
             FontWeight="Bold"
             Foreground="#FFF01D47"
             FontSize="20"
-            Text="Zašifrovaný elektronický podpis"/>
+            Text="Elektronický podpis kopie zdrojového souboru"/>
 
         <ScrollViewer 
             Grid.Row="5"
@@ -314,7 +305,38 @@
                     IsHitTestVisible="True"
                     FontSize="16"
                     Foreground="AliceBlue"
-                    Text="{Binding SourceFileCopyHashDoubleEncrypted}"/>
+                    Text="{Binding SourceFileCopyHash}"/>
+            </Grid>
+        </ScrollViewer>
+        <!--#endregion-->
+        <!--#region SOURCE FILE DECRYPTED SIGNATURE -->
+        <TextBlock
+            Margin="15,0,0,0"
+            Grid.Row="6"
+            Background="Transparent"
+            TextWrapping="Wrap"
+            FontWeight="Bold"
+            Foreground="#FFF01D47"
+            FontSize="20"
+            Text="Dešifrovaný přibalený elektronický podpis"/>
+
+        <ScrollViewer 
+            Grid.Row="7"
+            VerticalScrollBarVisibility="Visible"
+            HorizontalScrollBarVisibility="Disabled"
+            Margin="0,0,0,10">
+            <Grid 
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Margin="15, 0, 5, 0">
+                <TextBlock
+                    Background="Transparent"
+                    VerticalAlignment="Stretch"
+                    TextWrapping="Wrap"
+                    IsHitTestVisible="True"
+                    FontSize="16"
+                    Foreground="AliceBlue"
+                    Text="{Binding SourceFileCopyDecryptedSignature}"/>
             </Grid>
         </ScrollViewer>
         <!--#endregion-->

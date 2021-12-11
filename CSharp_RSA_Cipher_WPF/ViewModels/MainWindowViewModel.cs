@@ -22,10 +22,10 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         private BigInteger privateKey = BigInteger.Zero;
         private FileInfo? sourceFileInfo;
         private FileInfo? sourceFileCopyInfo;
+        private string sourceFileHash = string.Empty;
         private string sourceFileHashEncrypted = string.Empty;
-        private string sourceFileHashDoubleEncrypted = string.Empty;
-        private string sourceFileCopyHashEncrypted = string.Empty;
-        private string sourceFileCopyHashDoubleEncrypted = string.Empty;
+        private string sourceFileCopyHash = string.Empty;
+        private string sourceFileCopyDecryptedSignature = string.Empty;
         private string isVerificationAlright = string.Empty;
         private string message = string.Empty;
 
@@ -59,28 +59,28 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             set => SetProperty(ref sourceFileCopyInfo, value);
         }
 
+        public string SourceFileHash
+        {
+            get => sourceFileHash;
+            set => SetProperty(ref sourceFileHash, value);
+        }
+
         public string SourceFileHashEncrypted
         {
             get => sourceFileHashEncrypted;
             set => SetProperty(ref sourceFileHashEncrypted, value);
         }
 
-        public string SourceFileHashDoubleEncrypted
+        public string SourceFileCopyHash
         {
-            get => sourceFileHashDoubleEncrypted;
-            set => SetProperty(ref sourceFileHashDoubleEncrypted, value);
+            get => sourceFileCopyHash;
+            set => SetProperty(ref sourceFileCopyHash, value);
         }
 
-        public string SourceFileCopyHashEncrypted
+        public string SourceFileCopyDecryptedSignature
         {
-            get => sourceFileCopyHashEncrypted;
-            set => SetProperty(ref sourceFileCopyHashEncrypted, value);
-        }
-
-        public string SourceFileCopyHashDoubleEncrypted
-        {
-            get => sourceFileCopyHashDoubleEncrypted;
-            set => SetProperty(ref sourceFileCopyHashDoubleEncrypted, value);
+            get => sourceFileCopyDecryptedSignature;
+            set => SetProperty(ref sourceFileCopyDecryptedSignature, value);
         }
 
         public string IsVerificationAlright
@@ -232,12 +232,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
               var fileNames = Directory.EnumerateFiles(dirFileName);
               if (fileNames.Count() is not 2 || fileNames.Count(entry => entry.Contains(".sign")) is not 1)
               {
-                  Directory.Delete(dirFileName); // Tidy up
+                  Directory.Delete(dirFileName, true); // Tidy up
                   return;
               }
 
               // Open extracted files
-              string? srcFileCopyHash = null;
               try
               {
                   foreach (var fileName in fileNames)
@@ -247,50 +246,54 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                           var fileContent = File.ReadAllText(fileName);
                           var base64String = fileContent.Split(' ')[1];
                           var utf8 = Convert.FromBase64String(base64String);
-                          SourceFileCopyHashDoubleEncrypted = System.Text.Encoding.UTF8.GetString(utf8);
-                          SourceFileCopyHashEncrypted = RSA.Decrypt(sourceFileCopyHashDoubleEncrypted, publicKey, sharedKey);
+                          var encrypted = System.Text.Encoding.UTF8.GetString(utf8);
+                          SourceFileCopyDecryptedSignature = RSA.Decrypt(encrypted, publicKey, sharedKey);
                       }
                       else
                       {
                           SourceFileCopyInfo = new FileInfo(fileName);
-                          srcFileCopyHash = GetHashFromFile(fileName);
+                          SourceFileCopyHash = GetHashFromFile(fileName);
                       }
                   }
               }
               catch (ArgumentOutOfRangeException)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  return;
               }
               catch (FormatException)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  return;
               }
               catch (UnauthorizedAccessException)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  return;
               }
               catch (NotSupportedException)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  return;
               }
 
               // Verify source file copy
-              bool isAltered = string.Compare(srcFileCopyHash, sourceFileCopyHashEncrypted) is 0;
-              IsVerificationAlright = isAltered
+              bool isNotAltered = string.Compare(sourceFileCopyHash, sourceFileCopyDecryptedSignature) is 0;
+              IsVerificationAlright = isNotAltered
                   ? VerificationSuccess
                   : VerificationFailure;
 
-              Directory.Delete(dirFileName); // Tidy up
+              Directory.Delete(dirFileName, true); // Tidy up
           }, () => true);
 
         private Action TidyUpOnException(string dirFileName)
         {
             return () =>
             {
-                Directory.Delete(dirFileName); // Tidy up
+                Directory.Delete(dirFileName, true); // Tidy up
                 SourceFileCopyInfo = null;
-                SourceFileCopyHashEncrypted = string.Empty;
-                SourceFileCopyHashDoubleEncrypted = string.Empty;
+                SourceFileCopyHash = string.Empty;
+                SourceFileCopyDecryptedSignature = string.Empty;
             };
         }
 
@@ -312,7 +315,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
               // Create signature string
               const string msg = "RSA_SHA3-512";
-              var encodedHash = string.Join(' ', msg, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(SourceFileHashDoubleEncrypted)));
+              var encodedHash = string.Join(' ', msg, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(SourceFileHashEncrypted)));
 
               // Store signature and the copy of source file in .zip file
               File.WriteAllText(directoryPath + @"\signature.sign", encodedHash);
@@ -323,8 +326,8 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
         public ICommand CommandGenerateHashFromSourceFile => new CommandHandler(() =>
           {
-              SourceFileHashEncrypted = GetHashFromFile(SourceFileInfo.FullName);
-              SourceFileHashDoubleEncrypted = RSA.Encrypt(sourceFileHashEncrypted, PrivateKey, SharedKey);
+              SourceFileHash = GetHashFromFile(SourceFileInfo.FullName);
+              SourceFileHashEncrypted = RSA.Encrypt(sourceFileHash, PrivateKey, SharedKey);
           }, () => true);
 
         public void SetProperty<T>(ref T store, T value, [CallerMemberName] string name = null)

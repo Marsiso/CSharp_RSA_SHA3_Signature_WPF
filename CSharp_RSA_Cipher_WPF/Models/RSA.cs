@@ -49,7 +49,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             string[] decoded = new string[blocks.Length];
             for (int i = 0; i < decoded.Length; ++i)
             {
-                BigInteger block = new BigInteger(blocks[i]);
+                BigInteger block = new(blocks[i]);
                 BigInteger decrypted = block.ModPow(d, n);
                 decoded[i] = decrypted
                     .ToBinaryFromDecimal()
@@ -57,49 +57,40 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                     .ToASCIIFromBinary();
             }
 
-            return string.Join(string.Empty, decoded);
+            return string.Concat(decoded);
         }
 
         private static string ToBinaryFromDecimal(this BigInteger bigInteger)
         {
             StringBuilder stringBuilder = new();
-            foreach (var b in bigInteger.ToByteArray())
+            foreach (var @byte in bigInteger.ToByteArray())
             {
-                _ = stringBuilder.Append(Convert.ToString(b, 2).PadLeft(8, '0'));
-            }
-
-            return stringBuilder.ToString().PadLeft(80, '0');
-        }
-
-        private static string ToBinary8bFrom11b(this string str)
-        {
-            StringBuilder stringBuilder = new(capacity: 56);
-            for (int i = 3; i < str.Length; i += 11)
-            {
-                for (int j = i + 3; j < i + 11; ++j)
-                {
-                    _ = stringBuilder.Append(str[j]);
-                }
+                _ = stringBuilder.Append(Convert.ToString(@byte, 2).PadLeft(8, '0'));
             }
 
             return stringBuilder.ToString();
         }
 
+        private static string ToBinary8bFrom11b(this string str)
+        {
+            StringBuilder stringBuilder = new();
+            for (int i = str.Length % 11; i < str.Length; i += 11)
+            {
+                _ = stringBuilder.Append(str, i + 3, 8);
+            }
+            
+            return stringBuilder.ToString();
+        }
+
         private static string ToASCIIFromBinary(this string str)
         {
-            byte[] bytes = new byte[7];
-            for (int i = 0; i < 7; ++i)
+            var len = str.Length / 8;
+            byte[] bytes = new byte[len];
+            for (int i = 0; i < len; i++)
             {
-                StringBuilder stringBuilder = new(capacity: 8);
-                for (int j = i * 8; j < (i * 8) + 8; ++j)
-                {
-                    _ = stringBuilder.Append(str[j]);
-                }
-                string @byte = stringBuilder.ToString();
-                bytes[i] = Convert.ToByte(@byte, 2);
+                bytes[i] = Convert.ToByte(str.Substring(i * 8, 8), 2);
             }
-            string decoded = StringUtilities.FromAsciiByteArray(bytes);
-            return decoded;
+            return StringUtilities.FromAsciiByteArray(bytes);
         }
 
         private static (BigInteger, BigInteger) GeneratePrimeNumbersPQ()
