@@ -16,7 +16,13 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         private const string VerificationSuccess = "Verifikace dokončena. Obsah souboru zůstal beze změny.";
         private const string VerificationFailure = "Verifikace dokončena. Obsah souboru byl pozměněn.";
         private const string TitleOpenZipFile = "Otevření archivu se zdrojovým souborem a podpisem";
-        private const string FormatZipFile = "Archivované soubory (*.zip)|*.zip";
+        private const string FilterZipFiles = "Archivované soubory (*.zip)|*.zip";
+        private const string TitleOpenPrivateKeyFile = "Přečtení soukromého klíče ze souboru";
+        private const string TitleOpenPublicKeyFile = "Přečtení veřejného klíče ze souboru";
+        private const string TitleSavePublicKeyFile = "Vepsání veřejného klíče do souboru";
+        private const string FilterPublicKeyFiles = "Soubory veřejného klíče (*.pub)|*.pub";
+        private const string TitleSavePrivateKeyFile = "Vepsání soukromého klíče do souboru";
+        private const string FilterPrivateKeyFiles = "Soubory soukromého klíče (*.priv)|*.priv";
         private BigInteger sharedKey = BigInteger.Zero;
         private BigInteger publicKey = BigInteger.Zero;
         private BigInteger privateKey = BigInteger.Zero;
@@ -97,94 +103,80 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
         public ICommand CommandSavePublicKeyPair => new CommandHandler(() =>
           {
-              const string title = "Vepsání veřejného klíče do souboru";
               SaveFileDialog saveFileDialog = new()
               {
                   InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                  Filter = "Soubory veřejného klíče (*.pub)|*.pub",
-                  Title = title
+                  Filter = FilterPublicKeyFiles,
+                  Title = TitleSavePublicKeyFile
               };
 
               if (saveFileDialog.ShowDialog() is false)
                   return;
               var path = saveFileDialog.FileName;
               const string msg = "RSA";
-              var publicKeyBytes = System.Text.Encoding.UTF8.GetBytes(PublicKey.ToString());
-              var sharedKeyBytes = System.Text.Encoding.UTF8.GetBytes(SharedKey.ToString());
-              var lines = new[]
-              {
-                string.Join(' ', msg, Convert.ToBase64String(publicKeyBytes)),
-                string.Join(' ', msg, Convert.ToBase64String(sharedKeyBytes))
-              };
-              File.WriteAllLines(path, lines);
+              var bytes = System.Text.Encoding.UTF8.GetBytes(publicKey.ToString() + ' ' + sharedKey.ToString());
+              var text = string.Join(' ', msg, Convert.ToBase64String(bytes));
+              File.WriteAllText(path, text);
           }, () => true);
 
         public ICommand CommandOpenPublicKeyPair => new CommandHandler(() =>
           {
-              const string title = "Přečtení veřejného klíče ze souboru";
               OpenFileDialog openFileDialog = new()
               {
                   Multiselect = false,
                   InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                  Filter = "Soubory veřejného klíče (*.pub)|*.pub",
-                  Title = title
+                  Filter = FilterPublicKeyFiles,
+                  Title = TitleOpenPublicKeyFile
               };
 
               if (openFileDialog.ShowDialog() is false)
                   return;
               var path = openFileDialog.FileName;
-              var lines = File.ReadAllLines(openFileDialog.FileName);
-              var publicKeyBytes = Convert.FromBase64String(lines[0].Split(' ')[1]);
-              var sharedKeyBytes = Convert.FromBase64String(lines[1].Split(' ')[1]);
-
-              PublicKey = new BigInteger(System.Text.Encoding.UTF8.GetString(publicKeyBytes));
-              SharedKey = new BigInteger(System.Text.Encoding.UTF8.GetString(sharedKeyBytes));
+              var text = File.ReadAllText(openFileDialog.FileName);
+              var bytes = Convert.FromBase64String(text.Split(' ')[1]);
+              var decoded = System.Text.Encoding.UTF8.GetString(bytes);
+              var keys = decoded.Split(' ');
+              PublicKey = new BigInteger(keys[0]);
+              SharedKey = new BigInteger(keys[1]);
           }, () => true);
 
         public ICommand CommandSavePrivateKeyPair => new CommandHandler(() =>
           {
-              const string title = "Vepsání soukromého klíče do souboru";
               SaveFileDialog saveFileDialog = new()
               {
                   InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                  Filter = "Soubory soukromého klíče (*.priv)|*.priv",
-                  Title = title
+                  Filter = FilterPrivateKeyFiles,
+                  Title = TitleSavePrivateKeyFile
               };
 
               if (saveFileDialog.ShowDialog() is false)
                   return;
               var path = saveFileDialog.FileName;
               const string msg = "RSA";
-              var privateKeyBytes = System.Text.Encoding.UTF8.GetBytes(PrivateKey.ToString());
-              var sharedKeyBytes = System.Text.Encoding.UTF8.GetBytes(SharedKey.ToString());
-              var lines = new[]
-              {
-                string.Join(' ', msg, Convert.ToBase64String(privateKeyBytes)),
-                string.Join(' ', msg, Convert.ToBase64String(sharedKeyBytes))
-              };
-              File.WriteAllLines(path, lines);
+              var bytes = System.Text.Encoding.UTF8.GetBytes(privateKey.ToString() + ' ' + sharedKey.ToString());
+              var text = string.Join(' ', msg, Convert.ToBase64String(bytes));
+              File.WriteAllText(path, text);
           }, () => true);
 
         public ICommand CommandOpenPrivateKeyPair => new CommandHandler(() =>
           {
-              const string title = "Přečtení soukromého klíče ze souboru";
               OpenFileDialog openFileDialog = new()
               {
                   Multiselect = false,
                   InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                  Filter = "Soubory soukromého klíče (*.priv)|*.priv",
-                  Title = title
+                  Filter = FilterPrivateKeyFiles,
+                  Title = TitleOpenPrivateKeyFile
               };
 
               if (openFileDialog.ShowDialog() is false)
                   return;
               var path = openFileDialog.FileName;
-              var lines = File.ReadAllLines(openFileDialog.FileName);
-              var privateKeyBytes = Convert.FromBase64String(lines[0].Split(' ')[1]);
-              var sharedKeyBytes = Convert.FromBase64String(lines[1].Split(' ')[1]);
-
-              PrivateKey = new BigInteger(System.Text.Encoding.UTF8.GetString(privateKeyBytes));
-              SharedKey = new BigInteger(System.Text.Encoding.UTF8.GetString(sharedKeyBytes));
+              var text = File.ReadAllText(openFileDialog.FileName);
+              var bytes = Convert.FromBase64String(text.Split(' ')[1]);
+              var decoded = System.Text.Encoding.UTF8.GetString(bytes);
+              var keys = decoded.Split(' ');
+              PrivateKey = new BigInteger(keys[0]);
+              SharedKey = new BigInteger(keys[1]);
           }, () => true);
 
         public ICommand CommandOpenSourceFile => new CommandHandler(() =>
@@ -211,7 +203,7 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
               {
                   Multiselect = false,
                   InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                  Filter = FormatZipFile,
+                  Filter = FilterZipFiles,
                   Title = TitleOpenZipFile
               };
               if (openFileDialog.ShowDialog() is false)
