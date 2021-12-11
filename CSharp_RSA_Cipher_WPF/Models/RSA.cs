@@ -9,19 +9,26 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 {
     public static class RSA
     {
+        /// <summary>
+        /// RSA encryption algorithm.
+        /// </summary>
+        /// <param name="str">Plain-text to be encrypted.</param>
+        /// <param name="e">Part of the public key pair used for encryption.</param>
+        /// <param name="n">Part of the public key pair used for encryption.</param>
+        /// <returns>Encrypted plain-text.</returns>
         public static string Encrypt(in string str, in BigInteger e, in BigInteger n)
         {
-            byte[] encoded = StringUtilities.ToAsciiByteArray(str);
+            byte[] encoded = StringUtilities.ToAsciiByteArray(str); // Encode plain-text using ASCII encoding
             string[] encrypted = new string[Convert.ToInt32(Math.Ceiling(str.Length / (double)7))];
-            for (int i = 0; i < encrypted.Length; ++i)
+            for (int i = 0; i < encrypted.Length; ++i) // Splitting into blocks, 1 block is less or equal 7 characters
             {
                 StringBuilder stringBuilder = new StringBuilder(capacity: 77);
                 int index = i * 7;
                 for (int j = index; j < str.Length && j < index + 7; ++j)
                 {
-                    _ = stringBuilder.Append(Convert.ToString(encoded[j], 2).PadLeft(11, '0'));
+                    _ = stringBuilder.Append(Convert.ToString(encoded[j], 2).PadLeft(11, '0')); // Encode block 8b -> 11b
                 }
-                encrypted[i] = stringBuilder
+                encrypted[i] = stringBuilder // Block encryption
                     .ToString()
                     .ToDecimalFromBinary()
                     .ModPow(e, n)
@@ -31,6 +38,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return string.Join(' ', encrypted);
         }
 
+        /// <summary>
+        /// Converts binary string to BigInteger.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>Binary string as BigInteger.</returns>
         private static BigInteger ToDecimalFromBinary(this string value)
         {
             BigInteger bigInteger = BigInteger.Zero;
@@ -43,15 +55,22 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return bigInteger;
         }
 
+        /// <summary>
+        /// RSA decryption algorithm.
+        /// </summary>
+        /// <param name="str">Encrypted text (cipher) to be decrypted.</param>
+        /// <param name="d">Part of the private key pair used for decryption.</param>
+        /// <param name="n">Part of the private key pair used for decryption.</param>
+        /// <returns>Decrypted cipher as plain-text.</returns>
         public static string Decrypt(in string str, in BigInteger d, in BigInteger n)
         {
-            string[] blocks = str.Split(' ');
+            string[] blocks = str.Split(' '); // Split into blocks
             string[] decoded = new string[blocks.Length];
             for (int i = 0; i < decoded.Length; ++i)
             {
-                BigInteger block = new(blocks[i]);
-                BigInteger decrypted = block.ModPow(d, n);
-                decoded[i] = decrypted
+                BigInteger block = new(blocks[i]); // Convert block to integer
+                BigInteger decrypted = block.ModPow(d, n); // Block decryption
+                decoded[i] = decrypted // Decode block value
                     .ToBinaryFromDecimal()
                     .ToBinary8bFrom11b()
                     .ToASCIIFromBinary();
@@ -60,6 +79,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return string.Concat(decoded);
         }
 
+        /// <summary>
+        /// Converts BigInteger to its binary string representation.
+        /// </summary>
+        /// <param name="bigInteger"></param>
+        /// <returns>BigInteger as binary string.</returns>
         private static string ToBinaryFromDecimal(this BigInteger bigInteger)
         {
             StringBuilder stringBuilder = new();
@@ -71,6 +95,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Converts ASCII encoded characters with 11b padding back to 8b/1B encoded characters.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>Byte array with each byte representing ASCII encoded character.</returns>
         private static string ToBinary8bFrom11b(this string str)
         {
             StringBuilder stringBuilder = new();
@@ -82,6 +111,11 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Decodes ASCII binary string.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>Text representation of the currently decrypted block.</returns>
         private static string ToASCIIFromBinary(this string str)
         {
             var len = str.Length / 8;
@@ -93,13 +127,19 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return StringUtilities.FromAsciiByteArray(bytes);
         }
 
+        /// <summary>
+        /// Generates pair of co-prime numbers.
+        /// </summary>
+        /// <returns>Tuple(BigInteger, BigInteger) representing co-prime numbers.</returns>
         private static (BigInteger, BigInteger) GeneratePrimeNumbersPQ()
         {
-            const int lowerBound = 2048, upperBound = 3072;
+            const int lowerBound = 1024, upperBound = 2048;
 
+            // Randomly chosen prime number length in bits
             int lenBitsP = RandomNumberGenerator.GetInt32(lowerBound, upperBound);
             int lenBitsQ = RandomNumberGenerator.GetInt32(lowerBound, upperBound);
 
+            // Prime number generation
             Random rnd = new();
             BigInteger p = BigInteger.ProbablePrime(lenBitsP, rnd);
             BigInteger q = BigInteger.ProbablePrime(lenBitsQ, rnd);
@@ -111,6 +151,10 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
             return (p, q);
         }
 
+        /// <summary>
+        /// Generates random public and private key pairs used for RSA encryption/decryption algorithm.
+        /// </summary>
+        /// <returns>Tuple(BigInteger, BigInteger, BigInteger) == Tuple(Public Key, Private Key, Shared Key) representing public and private key pair parts.</returns>
         public static (BigInteger, BigInteger, BigInteger) GenerateKeyPairs()
         {
             BigInteger publicKey, privateKey, sharedKey;
