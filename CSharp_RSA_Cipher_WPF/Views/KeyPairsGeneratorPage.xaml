@@ -101,7 +101,7 @@
         </Grid.RowDefinitions>
 
         <!--#region LABEL PUBLIC KEY -->
-        <Border Background="#FF33334C"
+        <Border Background="#1E1E2E"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
                 Grid.Row="0"
@@ -198,7 +198,7 @@
         </ScrollViewer>
         <!--#endregion-->
         <!--#region LABEL PRIVATE KEY -->
-        <Border Background="#FF33334C"
+        <Border Background="#1E1E2E"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
                 Grid.Row="2"

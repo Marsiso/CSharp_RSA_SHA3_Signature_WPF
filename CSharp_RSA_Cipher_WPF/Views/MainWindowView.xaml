@@ -61,7 +61,7 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="0.8"/>
-                    <Setter Property="Background" Value="#FFBA0B2E"/>
+                    <Setter Property="Background" Value="#5B0A1A"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -86,7 +86,7 @@
         </Grid.RowDefinitions>
 
         <!--#region CONTROL PANEL -->
-        <DockPanel Background="#FFF01D47"
+        <DockPanel Background="#5B0A1A"
                    Grid.Column="0"
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch">
@@ -103,7 +103,7 @@
                 <Label x:Name="LblMenu">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Foreground" Value="AliceBlue"/>
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Content" Value="MENU"/>
                             <Setter Property="FontSize" Value="30"/>
@@ -126,7 +126,7 @@
                     Style="{StaticResource BorderMenuStyle}"
                     x:Name="BtnPageEncryption"
                     MouseDown="BtnPageEncryption_MouseDown"
-                    Background="#FFBA0B2E">
+                    Background="#4C0816">
                 <StackPanel Orientation="Horizontal"
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
@@ -142,7 +142,8 @@
             <Border DockPanel.Dock="Top"
                     Style="{StaticResource BorderMenuStyle}"
                     x:Name="BtnPageDecryption"
-                    MouseDown="BtnPageDecryption_MouseDown">
+                    MouseDown="BtnPageDecryption_MouseDown"
+                    Background="#5B0A1A">
                 <StackPanel Orientation="Horizontal"
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
@@ -158,7 +159,8 @@
             <Border DockPanel.Dock="Top"
                     Style="{StaticResource BorderMenuStyle}"
                     x:Name="BtnPageGenerator"
-                    MouseDown="BtnPageGenerator_MouseDown">
+                    MouseDown="BtnPageGenerator_MouseDown"
+                    Background="#5B0A1A">
                 <StackPanel Orientation="Horizontal"
                         Margin="25, 5, 0, 5"
                         VerticalAlignment="Center"
@@ -190,7 +192,7 @@
         </DockPanel>
         <!--#endregion-->
         <!--#region CONTENTS LAYOUT -->
-        <Grid Background="#FF27273A"
+        <Grid Background="#151522"
               Grid.Column="2"
               Grid.Row="0"
               HorizontalAlignment="Stretch"

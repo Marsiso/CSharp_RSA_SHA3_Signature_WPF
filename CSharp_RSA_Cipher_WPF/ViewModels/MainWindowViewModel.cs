@@ -27,6 +27,8 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         private const string FilterPublicKeyFiles = "Soubory veřejného klíče (*.pub)|*.pub";
         private const string TitleSavePrivateKeyFile = "Vepsání soukromého klíče do souboru";
         private const string FilterPrivateKeyFiles = "Soubory soukromého klíče (*.priv)|*.priv";
+        private const string FilterAllFiles = "Všechny soubory (*.*)|*.*";
+        private const string TitleOpenSourceFile = "Načtení zdrojového souboru";
         private BigInteger sharedKey = BigInteger.Zero;
         private BigInteger publicKey = BigInteger.Zero;
         private BigInteger privateKey = BigInteger.Zero;
@@ -41,27 +43,63 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         private bool areKeyPairsSet;
         private bool isSourceFileOpened;
         private bool isSignatureGenerated;
+        private bool arePrerequisitsReady;
         #endregion
         #region PROPERTIES
         /// <summary>
         /// Part of the public key pair used for signature encryption.
         /// </summary>
-        public BigInteger PublicKey { get => publicKey; set => SetProperty(ref publicKey, value); }
+        public BigInteger PublicKey
+        {
+            get => publicKey; set
+            {
+                SetProperty(ref publicKey, value);
+                AreKeyPairsSet = !publicKey.Equals(BigInteger.Zero) && !sharedKey.Equals(BigInteger.Zero) && !privateKey.Equals(BigInteger.Zero);
+                ArePrerequisitsReady = isSourceFileOpened && areKeyPairsSet;
+            }
+        }
 
         /// <summary>
         /// Part of the private key pair used for signature decryption.
         /// </summary>
-        public BigInteger PrivateKey { get => privateKey; set => SetProperty(ref privateKey, value); }
+        public BigInteger PrivateKey
+        {
+            get => privateKey; set
+            {
+                SetProperty(ref privateKey, value);
+                AreKeyPairsSet = !publicKey.Equals(BigInteger.Zero) && !sharedKey.Equals(BigInteger.Zero) && !privateKey.Equals(BigInteger.Zero);
+                ArePrerequisitsReady = isSourceFileOpened && areKeyPairsSet;
+            }
+        }
 
         /// <summary>
         /// Shared part of key pairs used for encryption and decryption.
         /// </summary>
-        public BigInteger SharedKey { get => sharedKey; set => SetProperty(ref sharedKey, value); }
+        public BigInteger SharedKey
+        {
+            get => sharedKey; set
+            {
+                SetProperty(ref sharedKey, value);
+                AreKeyPairsSet = !publicKey.Equals(BigInteger.Zero) && !sharedKey.Equals(BigInteger.Zero) && !privateKey.Equals(BigInteger.Zero);
+                ArePrerequisitsReady = isSourceFileOpened && areKeyPairsSet;
+            }
+        }
 
         /// <summary>
         /// General information about source file.
         /// </summary>
-        public FileInfo? SourceFileInfo { get => sourceFileInfo; private set => SetProperty(ref sourceFileInfo, value); }
+        public FileInfo? SourceFileInfo
+        {
+            get => sourceFileInfo; private set
+            {
+                SetProperty(ref sourceFileInfo, value);
+                if (value is not null)
+                {
+                    IsSourceFileOpened = true;
+                    ArePrerequisitsReady = isSourceFileOpened && areKeyPairsSet;
+                }
+            }
+        }
 
         /// <summary>
         /// General information about source file copy.
@@ -76,7 +114,14 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         /// <summary>
         /// Encrypted source file's hash string using RSA encryption algorithm.
         /// </summary>
-        public string SourceFileHashEncrypted { get => sourceFileHashEncrypted; private set => SetProperty(ref sourceFileHashEncrypted, value); }
+        public string SourceFileHashEncrypted
+        {
+            get => sourceFileHashEncrypted; private set
+            {
+                SetProperty(ref sourceFileHashEncrypted, value);
+                IsSignatureGenerated = value is not null;
+            }
+        }
 
         /// <summary>
         /// Source file copy's unique hash used for file verification.
@@ -107,6 +152,8 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         /// GUI component controller used for enabling and disabling the control.
         /// </summary>
         public bool AreKeyPairsSet { get => areKeyPairsSet; private set => SetProperty(ref areKeyPairsSet, value); }
+
+        public bool ArePrerequisitsReady { get => arePrerequisitsReady; set => SetProperty(ref arePrerequisitsReady, value); }
 
         /// <summary>
         /// Displayed message whenever exception occurs.
@@ -142,7 +189,19 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
               const string msg = "RSA";
               var bytes = System.Text.Encoding.UTF8.GetBytes(publicKey.ToString() + ' ' + sharedKey.ToString());
               var text = string.Join(' ', msg, Convert.ToBase64String(bytes));
-              File.WriteAllText(path, text);
+              try
+              {
+                  if (File.Exists(path))
+                  {
+                      File.Delete(path);
+                  }
+
+                  File.WriteAllText(path, text);
+              }
+              catch (Exception e)
+              {
+                  Message = e.Message;
+              }
           }, () => true);
 
         /// <summary>
@@ -160,13 +219,20 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
               if (openFileDialog.ShowDialog() is false)
                   return;
-              var path = openFileDialog.FileName;
-              var text = File.ReadAllText(openFileDialog.FileName);
-              var bytes = Convert.FromBase64String(text.Split(' ')[1]);
-              var decoded = System.Text.Encoding.UTF8.GetString(bytes);
-              var keys = decoded.Split(' ');
-              PublicKey = new BigInteger(keys[0]);
-              SharedKey = new BigInteger(keys[1]);
+              try
+              {
+                  var path = openFileDialog.FileName;
+                  var text = File.ReadAllText(openFileDialog.FileName);
+                  var bytes = Convert.FromBase64String(text.Split(' ')[1]);
+                  var decoded = System.Text.Encoding.UTF8.GetString(bytes);
+                  var keys = decoded.Split(' ');
+                  PublicKey = new BigInteger(keys[0]);
+                  SharedKey = new BigInteger(keys[1]);
+              }
+              catch (Exception e)
+              {
+                  Message = e.Message;
+              }
           }, () => true);
 
         /// <summary>
@@ -187,7 +253,14 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
               const string msg = "RSA";
               var bytes = System.Text.Encoding.UTF8.GetBytes(privateKey.ToString() + ' ' + sharedKey.ToString());
               var text = string.Join(' ', msg, Convert.ToBase64String(bytes));
-              File.WriteAllText(path, text);
+              try
+              {
+                  File.WriteAllText(path, text);
+              }
+              catch (Exception e)
+              {
+                  Message = e.Message;
+              }
           }, () => true);
 
         /// <summary>
@@ -205,13 +278,20 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
 
               if (openFileDialog.ShowDialog() is false)
                   return;
-              var path = openFileDialog.FileName;
-              var text = File.ReadAllText(openFileDialog.FileName);
-              var bytes = Convert.FromBase64String(text.Split(' ')[1]);
-              var decoded = System.Text.Encoding.UTF8.GetString(bytes);
-              var keys = decoded.Split(' ');
-              PrivateKey = new BigInteger(keys[0]);
-              SharedKey = new BigInteger(keys[1]);
+              try
+              {
+                  var path = openFileDialog.FileName;
+                  var text = File.ReadAllText(openFileDialog.FileName);
+                  var bytes = Convert.FromBase64String(text.Split(' ')[1]);
+                  var decoded = System.Text.Encoding.UTF8.GetString(bytes);
+                  var keys = decoded.Split(' ');
+                  PrivateKey = new BigInteger(keys[0]);
+                  SharedKey = new BigInteger(keys[1]);
+              }
+              catch (Exception e)
+              {
+                  Message = e.Message;
+              }
           }, () => true);
 
         /// <summary>
@@ -219,19 +299,25 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
         /// </summary>
         public ICommand CommandOpenSourceFile => new CommandHandler(() =>
           {
-              const string title = "Načtení zdrojového souboru";
               OpenFileDialog openFileDialog = new()
               {
                   Multiselect = false,
                   InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                  Filter = "Všechny soubory (*.*)|*.*",
-                  Title = title
+                  Filter = FilterAllFiles,
+                  Title = TitleOpenSourceFile
               };
 
               if (openFileDialog.ShowDialog() is false)
                   return;
               var path = openFileDialog.FileName;
-              SourceFileInfo = new FileInfo(path);
+              try
+              {
+                  SourceFileInfo = new FileInfo(path);
+              }
+              catch (Exception e)
+              {
+                  Message = e.Message;
+              }
           }, () => true);
 
         /// <summary>
@@ -289,24 +375,28 @@ namespace CSharp_RSA_Cipher_WPF.ViewModels
                       }
                   }
               }
-              catch (ArgumentOutOfRangeException)
+              catch (ArgumentOutOfRangeException e)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  Message = e.Message;
                   return;
               }
-              catch (FormatException)
+              catch (FormatException e)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  Message = e.Message;
                   return;
               }
-              catch (UnauthorizedAccessException)
+              catch (UnauthorizedAccessException e)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  Message = e.Message;
                   return;
               }
-              catch (NotSupportedException)
+              catch (NotSupportedException e)
               {
                   TidyUpOnException(dirFileName).Invoke();
+                  Message = e.Message;
                   return;
               }
 

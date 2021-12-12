@@ -49,9 +49,9 @@ namespace CSharp_RSA_Cipher_WPF.Views
         private void BtnPageEncryption_MouseDown(object sender, MouseButtonEventArgs e)
         {
             BrushConverter brushConverter = new BrushConverter();
-            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#FFBA0B2E");
-            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
-            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#4C0816");
+            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#5B0A1A");
+            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#5B0A1A");
 
             Pages.Content = new SignatureGeneratorPage(mainWindowViewModel);
         }
@@ -59,9 +59,9 @@ namespace CSharp_RSA_Cipher_WPF.Views
         private void BtnPageDecryption_MouseDown(object sender, MouseButtonEventArgs e)
         {
             BrushConverter brushConverter = new BrushConverter();
-            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#FFBA0B2E");
-            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
-            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#4C0816");
+            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#5B0A1A");
+            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#5B0A1A");
 
             Pages.Content = new FileVerificationPage(mainWindowViewModel);
         }
@@ -69,9 +69,9 @@ namespace CSharp_RSA_Cipher_WPF.Views
         private void BtnPageGenerator_MouseDown(object sender, MouseButtonEventArgs e)
         {
             BrushConverter brushConverter = new BrushConverter();
-            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#FFBA0B2E");
-            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
-            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#FFF01D47");
+            BtnPageGenerator.Background = (Brush)brushConverter.ConvertFrom("#4C0816");
+            BtnPageEncryption.Background = (Brush)brushConverter.ConvertFrom("#5B0A1A");
+            BtnPageDecryption.Background = (Brush)brushConverter.ConvertFrom("#5B0A1A");
 
             Pages.Content = new KeyPairsGeneratorPage(mainWindowViewModel);
         }

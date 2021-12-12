@@ -68,6 +68,9 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="0.8"/>
                 </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
         <!--#endregion-->
@@ -125,7 +128,7 @@
         </Grid.RowDefinitions>
         
         <!--#region LABEL SOURCE FILE -->
-        <Border Background="#FF33334C"
+        <Border Background="#1E1E2E"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
                 Grid.Row="0"
@@ -154,7 +157,8 @@
                     Grid.Column="3"
                     ToolTip="Vytvořit elektronický podpis."
                     Style="{StaticResource ButtonStyle}"
-                    Command="{Binding CommandGenerateHashFromSourceFile}">
+                    Command="{Binding CommandGenerateHashFromSourceFile}"
+                    IsEnabled="{Binding ArePrerequisitsReady}">
                     <Image Style="{StaticResource ImageStyle}"
                                Source="/Assets/Icon_Signature.png"/>
                 </Button>
@@ -162,7 +166,8 @@
                     Grid.Column="4"
                     ToolTip="Exportovat a archivovat kopii souboru včetně podpisu."
                     Style="{StaticResource ButtonStyle}"
-                    Command="{Binding CommandSaveZipFile}">
+                    Command="{Binding CommandSaveZipFile}"
+                    IsEnabled="{Binding IsSignatureGenerated}">
                     <Image 
                         Style="{StaticResource ImageStyle}"
                         Source="/Assets/Icon_ZipFIle.png"/>
@@ -271,7 +276,7 @@
             FontWeight="Bold"
             Foreground="#FFF01D47"
             FontSize="20"
-            Text="Dešifrovaný přibalený elektronický podpis"/>
+            Text="Elektronický podpis"/>
 
         <ScrollViewer 
             Grid.Row="3"
